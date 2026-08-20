@@ -4,23 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>מפת קורס - משה: סיפורו של מנהיג (גרסה 5)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  @font-face {
-    font-family: 'Fredoka';
-    src: url("https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Regular.ttf");
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: 'Fredoka-SemiBold';
-    src: url("https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-SemiBold.ttf");
-    font-weight: 600;
-  }
-  @font-face {
-    font-family: 'Fredoka-bold';
-    src: url("https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Bold.ttf");
-    font-weight: 700;
-  }
-
   * {
     box-sizing: border-box;
     font-family: 'Fredoka', 'FedraSansBarilan-Book', -apple-system, BlinkMacSystemFont,
@@ -46,7 +33,7 @@
     flex-wrap: wrap;
   }
   .map-header-text .map-title {
-    font-family: 'Fredoka-bold', sans-serif !important;
+    font-family: 'Fredoka', sans-serif !important; font-weight: 700 !important;
     font-weight: 700;
     font-size: 32px;
     margin: 0 0 6px 0;
@@ -92,35 +79,20 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 18px;
+    padding: 20px 18px;
     background: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
     cursor: pointer;
   }
 
-  /* מספר הפרק - עיגול מלא, זהה בדיוק לסגנון האחר בקורס (כמו .station-number) */
-  .card-number {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #254768;
-    color: #ffffff !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Fredoka-SemiBold', sans-serif !important;
+  /* "פרק X" בגודל/משקל של קפסולת הכותרת בשאר הקורס - בלי עיגול מספר נפרד */
+  .card-eyebrow {
+    font-size: 20px;
+    font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
     font-weight: 700;
-    font-size: 16px;
+    color: #000a11 !important;
   }
-  .card.intro .card-number, .card.summary .card-number {
-    background: #569eb8;
-  }
-
-  .card-top .card-eyebrow {
-    font-size: 12px;
-    font-family: 'Fredoka-SemiBold', sans-serif !important;
-    color: #254768;
+  .card.intro .card-eyebrow, .card.summary .card-eyebrow {
+    color: #254768 !important;
   }
 
   .card-body {
@@ -128,7 +100,7 @@
     cursor: pointer;
   }
   .card-title {
-    font-family: 'Fredoka-SemiBold', sans-serif !important;
+    font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
     font-weight: 700;
     font-size: 17px;
     margin: 0 0 4px 0;
@@ -203,12 +175,10 @@ courseMap.forEach((station, idx) => {
   const card = document.createElement('div');
   card.className = 'card' + (station.type ? ' ' + station.type : '');
 
-  const numberLabel = station.type === 'intro' ? '0' : (station.type === 'summary' ? '10' : idx);
-  const eyebrow = station.type === 'intro' ? 'פתיחה לקורס' : (station.type === 'summary' ? 'סיום הקורס' : `פרק ${idx}`);
+  const eyebrow = station.type === 'intro' ? 'פתיחה לקורס' : (station.type === 'summary' ? 'סיכום הקורס' : `פרק ${idx}`);
 
   card.innerHTML = `
     <div class="card-top">
-      <span class="card-number">${numberLabel}</span>
       <span class="card-eyebrow">${eyebrow}</span>
     </div>
     <div class="card-body">
