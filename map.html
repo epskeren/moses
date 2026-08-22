@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- גרסה: v7 (16.08.2026) — ברירת מחדל: מצב סגור (רק השורש פתוח, כל הפרקים סגורים עד לחיצה) -->
+<!-- גרסה: v10 (16.08.2026) — כפתורי זום (−/%/+) עטופים כקבוצה עצמאית: רווח פנימי קטן ביניהם (4px), ורווח גדול (16px) בינם לבין "סגור-הכל" -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8" />
@@ -30,8 +30,9 @@
   body{margin:0;background:var(--bg);color:var(--ink);}
   .wrap{padding:12px; width:100%; max-width:none; margin:0 auto; overflow:visible}
 
-  .zoombar{position:sticky; top:0; display:flex; gap:8px; z-index:3; align-items:center; touch-action:auto; cursor:auto; background:#fff; padding:8px; margin:0 0 16px; border-radius:12px; box-shadow:0 6px 14px rgba(37,71,104,.10)}
-  .zoombar button{border:0; border-radius:10px; padding:8px 10px; font-family:inherit; font-weight:700; cursor:pointer; box-shadow:0 6px 14px rgba(37,71,104,.14); background:#ebf2f7; color:#254768}
+  .zoombar{position:sticky; top:0; display:flex; gap:13px; z-index:3; align-items:center; justify-content:center; touch-action:auto; cursor:auto; background:#fff; padding:16px; margin:0 0 16px; border-radius:9999px; border:1px solid #cedfef}
+  .zoombar button{border:0; border-radius:10px; padding:8px 10px; font-family:inherit; font-weight:700; cursor:pointer; background:#ebf2f7; color:#254768}
+  .zoombar .zoom-group{display:flex; align-items:center; gap:4px; margin-inline-start:16px}
   .zoombar .pct{min-width:68px; text-align:center}
 
   .viewport{position:relative; width:100%; height:auto; overflow:hidden; touch-action:none; cursor:grab; display:flex; align-items:center; justify-content:center}
@@ -71,11 +72,13 @@
 <div class="wrap">
   <div class="zoombar" aria-label="Zoom controls">
     <button id="fitW" title="התאם לרוחב">↔︎ התאמה</button>
-    <button id="zoomOut" title="Zoom out">−</button>
-    <button id="zoomPct" class="pct" title="100%">100%</button>
-    <button id="zoomIn" title="Zoom in">+</button>
     <button id="expandAll" title="פתח הכל">פתח־הכל</button>
     <button id="collapseAll" title="סגור הכל">סגור־הכל</button>
+    <div class="zoom-group">
+      <button id="zoomOut" title="Zoom out">−</button>
+      <button id="zoomPct" class="pct" title="100%">100%</button>
+      <button id="zoomIn" title="Zoom in">+</button>
+    </div>
   </div>
 
   <div id="viewport" class="viewport">
