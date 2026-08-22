@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- גרסה: v6 (16.08.2026) — 3 תיקונים: (1) DEPTH_FIXED_WIDTH הוחזר ל-false (רוחב טבעי, לא אחיד) עכשיו שבאג ה-CSS האמיתי תוקן ב-v5. (2) gap-rootcat צומצם ל-24px. (3) "התאמה" מתחשבת גם בגובה + מרכוז אנכי/אופקי -->
+<!-- גרסה: v7 (16.08.2026) — ברירת מחדל: מצב סגור (רק השורש פתוח, כל הפרקים סגורים עד לחיצה) -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8" />
@@ -256,6 +256,9 @@
     return node;
   }
   const root = build(data.root, 0, null);
+  // ⭐ ברירת מחדל: מצב סגור - השורש נשאר פתוח (כדי להציג את רשימת הפרקים),
+  // אך כל פרק (ומה שמתחתיו) סגור עד שלוחצים עליו
+  root.children.forEach(c => collapseDeep(c));
 
   function gapForDepth(depth){
     if(depth>=4) return GAP_D4;
