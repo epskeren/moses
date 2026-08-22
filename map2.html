@@ -86,7 +86,8 @@
 
   .t-node {
     position: absolute;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
     width: 52px;
     height: 52px;
     border-radius: 50%;
@@ -101,8 +102,10 @@
     z-index: 2;
   }
   .t-item.milestone .t-node { background: var(--turquoise); }
-  .t-item:nth-child(odd) .t-node  { right: -26px; }
-  .t-item:nth-child(even) .t-node { left: -26px; }
+  /* אי-זוגיים = חצי ימני (right:0), הקו נמצא בקצה השמאלי של הפריט */
+  .t-item:nth-child(odd) .t-node  { left: -26px; }
+  /* זוגיים = חצי שמאלי (right:50%), הקו נמצא בקצה הימני של הפריט */
+  .t-item:nth-child(even) .t-node { right: -26px; }
 
   .t-card {
     background: #ffffff;
@@ -184,12 +187,12 @@
     .t-item:nth-child(even) {
       width: 100%;
       right: 0;
-      padding: 0 0 32px 62px;
+      padding: 0 62px 32px 0;
     }
     .t-item:nth-child(odd) .t-node,
     .t-item:nth-child(even) .t-node {
-      right: auto;
-      left: 0;
+      left: auto;
+      right: 0;
     }
   }
 
