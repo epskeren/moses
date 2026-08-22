@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מפת קורס - משה: סיפורו של מנהיג (גרסה 5)</title>
+<title>מפת קורס - משה: סיפורו של מנהיג (גרסה 6)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -84,27 +84,18 @@
     cursor: pointer;
   }
 
-  /* "פרק X" בגודל/משקל של קפסולת הכותרת בשאר הקורס - בלי עיגול מספר נפרד */
+  /* מספר + שם היחידה יחד, אותו צבע לכל הכרטיסים (פתיחה/סיכום/רגילים) */
   .card-eyebrow {
-    font-size: 20px;
+    font-size: 18px;
+    line-height: 1.3;
     font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
     font-weight: 700;
     color: #000a11 !important;
-  }
-  .card.intro .card-eyebrow, .card.summary .card-eyebrow {
-    color: #254768 !important;
   }
 
   .card-body {
     padding: 14px 18px 18px 18px;
     cursor: pointer;
-  }
-  .card-title {
-    font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
-    font-weight: 700;
-    font-size: 17px;
-    margin: 0 0 4px 0;
-    line-height: 1.3;
   }
   .card-count {
     font-size: 12px;
@@ -175,14 +166,13 @@ courseMap.forEach((station, idx) => {
   const card = document.createElement('div');
   card.className = 'card' + (station.type ? ' ' + station.type : '');
 
-  const eyebrow = station.type === 'intro' ? 'פתיחה לקורס' : (station.type === 'summary' ? 'סיכום הקורס' : `פרק ${idx}`);
+  const eyebrow = `${idx} - ${station.title}`;
 
   card.innerHTML = `
     <div class="card-top">
       <span class="card-eyebrow">${eyebrow}</span>
     </div>
     <div class="card-body">
-      <p class="card-title">${station.title}</p>
       <p class="card-count">${station.items.length} תתי-נושאים</p>
       <div class="card-expand">
         <ul>${station.items.map(item => `<li><a href="#">${item}</a></li>`).join('')}</ul>
