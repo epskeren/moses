@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מפת הקורס - משה: סיפורו של מנהיג</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #254768;
+    --turquoise: #569eb8;
+    --light1: #e8f1fa;
+    --light2: #cedfef;
+    --light3: #b0cbec;
+    --gray: #6b7280;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: #ffffff;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 80px 20px;
+  }
+
+  /* ---------- כותרת ---------- */
+  .map-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .map-header .eyebrow {
+    display: inline-block;
+    background: var(--light1);
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 18px;
+    border-radius: 9999px;
+    margin-bottom: 14px;
+  }
+  .map-title {
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .map-subtitle {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--turquoise);
+  }
+
+  /* ---------- ציר המסע ---------- */
+  .timeline {
+    position: relative;
+    padding: 8px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 50%;
+    width: 4px;
+    margin-right: -2px;
+    background: linear-gradient(180deg, var(--light2), var(--light1) 50%, var(--light2));
+    border-radius: 9999px;
+  }
+
+  .t-item {
+    position: relative;
+    width: 50%;
+    padding: 0 44px 44px 44px;
+  }
+  .t-item:nth-child(odd)  { right: 0; }
+  .t-item:nth-child(even) { right: 50%; }
+
+  .t-node {
+    position: absolute;
+    top: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 0 0 5px #ffffff;
+    z-index: 2;
+  }
+  .t-item.milestone .t-node { background: var(--turquoise); }
+  .t-item:nth-child(odd) .t-node  { right: -26px; }
+  .t-item:nth-child(even) .t-node { left: -26px; }
+
+  .t-card {
+    background: #ffffff;
+    border: 2px solid var(--light1);
+    border-radius: 18px;
+    padding: 18px 22px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .45s ease, transform .45s ease, border-color .2s ease;
+  }
+  .t-card.visible { opacity: 1; transform: translateY(0); }
+  .t-item:hover .t-card { border-color: var(--light2); }
+
+  .t-eyebrow {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--turquoise);
+    margin-bottom: 4px;
+  }
+  .t-title {
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .t-count {
+    font-size: 12.5px;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+
+  .t-toggle {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--navy);
+  }
+  .t-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform .25s ease;
+  }
+  .t-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  .t-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .t-panel ul {
+    list-style: none;
+    border-top: 1px solid var(--light1);
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+  .t-panel li {
+    padding: 5px 0;
+    font-size: 13.5px;
+  }
+  .t-panel a {
+    color: var(--navy);
+    text-decoration: none;
+  }
+  .t-panel a:hover {
+    color: var(--turquoise);
+    text-decoration: underline;
+  }
+
+  /* ---------- מובייל: עמודה אחת ---------- */
+  @media (max-width: 680px) {
+    .timeline::before { right: 26px; }
+    .t-item,
+    .t-item:nth-child(odd),
+    .t-item:nth-child(even) {
+      width: 100%;
+      right: 0;
+      padding: 0 0 32px 62px;
+    }
+    .t-item:nth-child(odd) .t-node,
+    .t-item:nth-child(even) .t-node {
+      right: auto;
+      left: 0;
+    }
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--light2); border-radius: 9999px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="map-header">
+    <span class="eyebrow">מפת הקורס</span>
+    <h1 class="map-title">משה — סיפורו של מנהיג</h1>
+    <p class="map-subtitle">11 תחנות במסע מנהיגות אחד</p>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+
+</div>
+
+<script>
+const courseMap = [
+  { title: "לפני שמתחילים", milestone: true,
+    items: ["איך לומדים פה?", "סילבוס", "למה משה? למה עכשיו?", "ברוכים הבאים"] },
+  { title: "לידתו של מנהיג",
+    items: ["פתיחה", "כוורת נשית", "פרשנות", "ניתוח טקסט", "סיפורי לידה: משה, סרגון והורוס", "משה הילד והאיש", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "הבחירה להנהיג",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "מנהיג נולד: מוסר בגיל הרך", "על גאולת ישראל והאומות", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "רגע ההקדשה",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "סצינות הקדשה: בקולנוע ובמקרא", "חיפוש משמעות: בין משה לציונות", "מעשי משה סימן לישראל", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום", "יציאת מצרים"] },
+  { title: "המנהיג כמתווך",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "גישור: בין הפטיש לסדן", "חלקו של אהרן במעשה העגל", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "מנהיגות במשבר",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "משה ובגין: מנהיגים במשבר", "בין הרועה לגיבור העל", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "תום עידן",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "חטא משה בעידן ה-AI", "כישוף, מונותאיזם וטעויותיו של משה", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "העברת השרביט",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "חילופי הנהגה: ממשה ליהושע", "הנהגה אחרת: ממנים מחליף", "עיצוב מנהיגות באמצעות חונכות במקרא", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "הנאום האחרון",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "פרידת המנהיג: נאום כצוואה", "נאום הפרישה של משה", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "זה סיפור פרידה",
+    items: ["פתיחה", "פרשנות", "ניתוח טקסט", "אפילוג ספרותי: כיצד לסיים סיפור?", "משה איש האלוהים", "טרמינולוגיה מנהיגותית", "שאלות הערכה", "סיכום"] },
+  { title: "סיכום הקורס", milestone: true,
+    items: ["מטלת סיכום"] },
+];
+
+const timeline = document.getElementById('timeline');
+
+courseMap.forEach((station, idx) => {
+  const item = document.createElement('div');
+  item.className = 't-item' + (station.milestone ? ' milestone' : '');
+
+  const numberLabel = idx === 0 ? '0' : (idx === courseMap.length - 1 ? '✓' : idx);
+  const eyebrow = idx === 0 ? 'פתיחה לקורס' : (idx === courseMap.length - 1 ? 'סיום הקורס' : `פרק ${idx}`);
+  const panelId = `panel-${idx}`;
+
+  item.innerHTML = `
+    <div class="t-node">${numberLabel}</div>
+    <div class="t-card">
+      <div class="t-eyebrow">${eyebrow}</div>
+      <div class="t-title">${station.title}</div>
+      <div class="t-count">${station.items.length} תתי-נושאים</div>
+      <button class="t-toggle" aria-expanded="false" aria-controls="${panelId}">
+        <span>פתיחת תוכן</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="t-panel" id="${panelId}" role="region">
+        <ul>${station.items.map(i => `<li><a href="#">${i}</a></li>`).join('')}</ul>
+      </div>
+    </div>
+  `;
+
+  const toggle = item.querySelector('.t-toggle');
+  const panel = item.querySelector('.t-panel');
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    toggle.querySelector('span').textContent = open ? 'פתיחת תוכן' : 'סגירת תוכן';
+    panel.style.maxHeight = open ? '0' : panel.scrollHeight + 'px';
+  });
+
+  timeline.appendChild(item);
+});
+
+// כניסה עדינה בגלילה
+const cards = document.querySelectorAll('.t-card');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+cards.forEach(c => io.observe(c));
+</script>
+
+</body>
+</html>
