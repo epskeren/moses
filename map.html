@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>מפת קורס - מנהיגות בראי המקרא</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* שימוש בגופן Fredoka של הקורס */
+      --font: 'Fredoka', 'Fredoka-Regular', system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      --bg: #f8f9fa; /* רקע הקורס */
+      --ink: #000a11; /* צבע טקסט הקורס */
+      --chip-h: 48px; 
+      --col-step: 400px;        /* מרחק אופקי בין עמודות כלליות */
+      --col-step-d23: 400px;    /* מרחק בין עמודות 2↔3 */
+      --gap-x: 36px;            /* מרווח אופקי נוסף */
+      --gap-y: 40px; 
+      --gap-rootcat: 140px; 
+      --gap-d3: 22px;         
+      --gap-d4: 22px;         
+      --gap-cat: 22px;         
+      --gap-item: 6px;         
+      --r: 9999px;              /* קפסולות מעוגלות לחלוטין (צורת גלולה) */
+      --shadow: 0 8px 22px rgba(0,0,0,.06);
+      --edge: #cedfef;          /* צבע הקווים תואם למסגרות הקורס */
+      --toggle: #569eb8;        /* צבע כפתור הפתיחה - טורקיז מהקורס */
+      --anim-dur: .60s; 
+      --anim-ease: ease-in-out;
+      --fit-margin: 32; 
+    }
+    
+    * { box-sizing: border-box; }
+    html, body, button, input, select, textarea, .chip, .zoombar, .zoombar button, .pct, .label { 
+      font-family: var(--font) !important; 
+    }
+    html, body { height: auto; min-height: 100%; overflow-x: hidden; }
+    body { margin: 0; background: var(--bg); color: var(--ink); } 
+    .wrap { padding: 12px; width: 100%; max-width: none; margin: 0 auto; overflow: visible; }
+
+    /* שורת כפתורים מופרדת מעל המפה */
+    .zoombar { 
+      position: sticky; top: 0; display: flex; gap: 8px; z-index: 3; align-items: center; 
+      touch-action: auto; cursor: auto; background: #ffffff; padding: 12px; margin: 0 0 16px; 
+      border-radius: 9999px; border: 1px solid #cedfef; box-shadow: 0 6px 14px rgba(0,0,0,.04);
+      justify-content: center;
+    }
+    .zoombar button { 
+      border: 1px solid #e8f1fa; border-radius: 9999px; padding: 8px 16px; 
+      font-family: inherit; font-weight: 600; cursor: pointer; color: #254768;
+      background: #f0f4f9; transition: all 0.2s ease;
+    }
+    .zoombar button:hover { background: #cedfef; }
+    .zoombar .pct { min-width: 68px; text-align: center; background: transparent; border: none; font-weight: 700; color: #000a11; }
+
+    /* במה */
+    .viewport { position: relative; width: 100%; height: auto; overflow: hidden; touch-action: none; cursor: grab; }
+    .scroller { position: relative; }
+    .stage { position: relative; min-height: 380px; min-width: 0; transform-origin: top right; opacity: 0; }
+    .chips { position: absolute; inset: 0; z-index: 1; }
+    svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 0; }
+
+    /* Capsules */
+    .chip { 
+      position: absolute; display: inline-flex; align-items: center; flex-direction: row-reverse; 
+      height: var(--chip-h); padding: 0 20px; border-radius: var(--r);
+      line-height: 1; white-space: nowrap; box-shadow: var(--shadow);
+      direction: rtl; text-align: right; font-weight: 600; font-size: 16px; gap: 14px;
+      background: var(--chip-bg, #ffffff); 
+      border: 2px solid var(--chip-border, transparent);
+      color: #000a11;
+    }
+    
+    /* קפסולת שורש - עיצוב כותרת ראשית של הקורס */
+    .chip[data-kind="root"] { 
+      font-weight: 700; font-size: 20px; padding: 0 32px; height: 60px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .label { pointer-events: none; }
+
+    /* Toggle */
+    .toggle { 
+      position: relative; width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto; 
+      background: var(--toggle); cursor: pointer; border: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .toggle .bar { 
+      position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; background: #fff; 
+      border-radius: 2px; transform: translate(-50%,-50%); transition: opacity var(--anim-dur) var(--anim-ease); 
+    }
+    .toggle .bar.v { transform: translate(-50%,-50%) rotate(90deg); }
+    .chip[aria-expanded="true"] .toggle .bar.v { opacity: 0; }
+
+    .edge { fill: none; stroke: var(--edge); stroke-width: 3; stroke-linecap: round; }
+
+    /* Fades */
+    .fade-enter { opacity: 0.001; }
+    .fade-enter.fade-active { opacity: 1; transition: opacity var(--anim-dur) var(--anim-ease); }
+    .fade-exit { opacity: 1; }
+    .fade-exit.fade-active { opacity: 0; transition: opacity var(--anim-dur) var(--anim-ease); }
+
+    @media (prefers-reduced-motion: reduce){
+      .fade-enter.fade-active, .fade-exit.fade-active { transition: none; }
+    }
+    @media (max-width: 900px){ :root{ --chip-h: 44px; --col-step: 340px; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="zoombar" aria-label="Zoom controls">
+    <button id="fitW" title="התאם לרוחב">↔︎ התאמה</button>
+    <button id="zoomOut" title="Zoom out">−</button>
+    <div id="zoomPct" class="pct" title="100%">100%</div>
+    <button id="zoomIn" title="Zoom in">+</button>
+    <button id="expandAll" title="פתח הכל">פתח הכל</button>
+    <button id="collapseAll" title="סגור הכל">סגור הכל</button>
+  </div>
+
+  <div id="viewport" class="viewport">
+    <div id="scroller" class="scroller">
+      <div id="app" class="stage">
+        <svg id="edges" aria-hidden="true"></svg>
+        <div id="chips" class="chips"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- === DATA (מנהיגות בראי המקרא - משה) === -->
+<!-- יש להחליף את בלוק ה-JSON הזה בנתונים מתוך "מפת הקורס.xlsx" שלך -->
+<script id="mindmap-data" type="application/json">
+{
+  "dir": "rtl",
+  "flow": "rtl",
+  "root": {
+    "label": "מנהיגות בראי המקרא: דמותו של משה",
+    "children": [
+      {
+        "label": "מודולה 1 – לידתו של מנהיג: פתיחה",
+        "children": [
+          {"label": "הולדת מנהיג מתוך משבר"},
+          {"label": "כוורת נשית", "children": [
+            {"label": "מפת המחלוקות הפרשנית"},
+            {"label": "פרשנות הראשונים"}
+          ]},
+          {"label": "סיפורי לידה ותודעת חירות", "children": [
+            {"label": "ניתוח מקראי - חוקרי מקרא ותבניות"},
+            {"label": "ניתוח ספרותי-אמנותי"}
+          ]},
+          {"label": "מילון מונחים רב-תחומי", "children": [
+            {"label": "טרמינולוגיה מקראית"},
+            {"label": "טרמינולוגיה פרשנית"},
+            {"label": "טרמינולוגיה ספרותית"}
+          ]}
+        ]
+      },
+      {
+        "label": "מודולה 6 – חטא משה (ואהרון)",
+        "children": [
+          {"label": "התיאוריה הקלאסית – משה שם עצמו במרכז"},
+          {"label": "תיאוריה שניה - משה כועס על העם"},
+          {"label": "תיאוריה שלישית - חולשה וחוסר אונים"},
+          {"label": "מבנה קונצנטרי (מתמרכז)"},
+          {"label": "מילון מונחים רב-תחומי", "children": [
+            {"label": "טרמינולוגיה פסיכולוגית"},
+            {"label": "טרמינולוגיה פוליטית-ארגונית"}
+          ]}
+        ]
+      },
+      {
+        "label": "מודולה 7 – סיכום הקורס",
+        "children": [
+          {"label": "משה רבנו - מודל מנהיגות על זמני"},
+          {"label": "פרויקט מסכם"}
+        ]
+      }
+    ]
+  }
+}
+</script>
+
+<script>
+(function(){
+  let data; 
+  try { 
+    data = JSON.parse(document.getElementById('mindmap-data').textContent); 
+  } catch(e) { 
+    console.error('Mindmap JSON parse error:', e); 
+    data = {"dir":"rtl","flow":"rtl","root":{"label":"שגיאת נתונים – נא לבדוק JSON","children":[]}}; 
+  }
+
+  const DIR = (data.dir||'rtl'); document.documentElement.setAttribute('dir', DIR);
+  const FLOW = (data.flow||'rtl');
+  const viewport = document.getElementById('viewport');
+  const stage = document.getElementById('app');
+  const scroller = document.getElementById('scroller');
+  const chipLayer = document.getElementById('chips');
+  const edgeLayer = document.getElementById('edges');
+
+  function updateSafeTop(){ if(viewport) viewport.style.paddingTop = '0px'; if(scroller) scroller.style.marginTop = '0px'; }
+
+  if(DIR==='ltr'){ stage.style.transformOrigin = 'top left'; stage.style.left='0'; }
+  else { stage.style.transformOrigin = 'top right'; stage.style.right='0'; }
+  stage.style.top='0'; stage.style.position='absolute';
+
+  const CSS = getComputedStyle(document.documentElement);
+  const CHIP_H  = parseFloat(CSS.getPropertyValue('--chip-h'))   || 48;
+  const COL_STEP= parseFloat(CSS.getPropertyValue('--col-step')) || 400;
+  const COL_STEP_D23 = parseFloat(CSS.getPropertyValue('--col-step-d23')) || COL_STEP;
+  const GAP_X   = parseFloat(CSS.getPropertyValue('--gap-x'))    || 36; 
+  const GAP_Y   = parseFloat(CSS.getPropertyValue('--gap-y'))    || 40; 
+  const GAP_ROOTCAT = parseFloat(CSS.getPropertyValue('--gap-rootcat')) || 140; 
+  const GAP_CAT = parseFloat(CSS.getPropertyValue('--gap-cat'))  || 110; 
+  const GAP_ITEM= parseFloat(CSS.getPropertyValue('--gap-item')) || 36;  
+  const GAP_D3 = parseFloat(CSS.getPropertyValue('--gap-d3')) || GAP_ITEM;
+  const GAP_D4 = parseFloat(CSS.getPropertyValue('--gap-d4')) || GAP_ITEM;
+
+  /* צבעי הקורס על פי הסטיילגייד */
+  const DEPTH_STYLES = {
+    0: { bg: 'linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%)', border: '#a7c3e4' }, // Root (גרדיאנט)
+    1: { bg: '#f0f4f9', border: '#a7c3e4' }, // Blue
+    2: { bg: '#eaf6f9', border: '#92cddc' }, // Turquoise
+    3: { bg: '#edf8f4', border: '#9cd9c7' }, // Mint
+    4: { bg: '#fdeeea', border: '#f4a79d' }, // Peach
+    5: { bg: '#fae7e4', border: '#e5867a' }  // Coral
+  };
+
+  const DEPTH_FIXED_WIDTH = false; 
+
+  function build(raw, depth=0, parent=null){
+    const node = { label: raw.label, depth, parent, collapsed: !!raw.collapsed, x:0,y:0,width:0,height:CHIP_H, el:null, id: Math.random().toString(36).slice(2), _subH:0, children: [], gapOverride: (typeof raw.gap==='number'? raw.gap : null) };
+    (raw.children||[]).forEach(ch=> node.children.push(build(ch, depth+1, node)));
+    return node;
+  }
+  const root = build(data.root, 0, null);
+
+  function gapForDepth(depth){
+    if(depth>=4) return GAP_D4;         
+    if(depth===3) return GAP_D3;         
+    if(depth===2) return GAP_CAT;        
+    if(depth===1) return GAP_ROOTCAT;    
+    return GAP_Y;                        
+  }
+
+  function collapseDeep(n){ n.collapsed = true; n.children.forEach(c=>collapseDeep(c)); }
+
+  let openingNode = null; 
+  let edgeOf = new Map();
+  const PAD = 6; 
+  let prevVisibleIds = new Set(); 
+  let lastW = 0, lastH = 0; 
+  let offsetX = 0, stageW = 0; 
+  
+  let isPanning=false, panPending=false, startX=0, startY=0, startScrollL=0, startScrollT=0; const DRAG_T=4;
+  let pinchStartDist=0, pinchStartScale=1;
+  
+  function sizeViewport(){
+    const rect = viewport.getBoundingClientRect();
+    const avail = window.innerHeight - rect.top - 16; 
+    viewport.style.height = Math.max(320, Math.floor(avail)) + 'px';
+  }
+
+  function isDescendant(node, anc){ let p=node.parent; while(p){ if(p===anc) return true; p=p.parent; } return false; }
+
+  function makeToggle(){
+    const btn = document.createElement('button');
+    btn.className = 'toggle'; btn.setAttribute('aria-label','פתח/סגור');
+    btn.innerHTML = '<i class="bar h"></i><i class="bar v"></i>';
+    return btn;
+  }
+
+  function ensureChip(node){
+    if(node.el) return;
+    const el = document.createElement('div'); el.className = 'chip';
+    el.dataset.kind = node.depth===0 ? 'root' : (node.children.length? 'cat':'leaf');
+    const label = document.createElement('span'); label.className='label'; label.textContent=node.label; el.appendChild(label);
+    
+    if(node.children.length){
+      const t = makeToggle(); el.appendChild(t);
+      el.setAttribute('aria-expanded', String(!node.collapsed));
+      t.addEventListener('click', ev => { ev.stopPropagation(); handleToggle(node); });
+      el.setAttribute('tabindex','0'); el.setAttribute('role','button');
+      el.addEventListener('keydown', ev=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); handleToggle(node); } });
+    }
+    
+    // החלת צבעי הסטיילגייד לפי עומק
+    const styleObj = DEPTH_STYLES[Math.min(node.depth, 5)] || DEPTH_STYLES[5];
+    el.style.setProperty('--chip-bg', styleObj.bg);
+    el.style.setProperty('--chip-border', styleObj.border);
+    
+    chipLayer.appendChild(el); node.el=el;
+  }
+  (function collect(n){ ensureChip(n); n.children.forEach(collect); })(root);
+
+  function measure(node){
+    node.el.style.left = '-10000px';
+    node.el.style.top = '-10000px';
+    const natural = Math.max(140, node.el.offsetWidth);
+    node.width = natural;
+    node.children.forEach(measure);
+  }
+  
+  function subHeight(node){
+    if(node.collapsed || node.children.length===0){ node._subH = node.height; return node._subH; }
+    let total = 0;
+    node.children.forEach((c,i)=>{
+      subHeight(c);
+      total += c._subH;
+      if(i>0){
+        const localGap = (node.gapOverride != null) ? node.gapOverride : gapForDepth(c.depth);
+        total += localGap;
+      }
+    });
+    node._subH = Math.max(node.height, total); return node._subH;
+  }
+
+  function xForDepth(depth){
+    let acc = 0;
+    for(let i=0;i<depth;i++){
+      const step = (i===2 ? COL_STEP_D23 : COL_STEP);
+      acc += (step + GAP_X);
+    }
+    return acc * (FLOW==='rtl' ? -1 : 1);
+  }
+
+  function position(node, depth, top){
+    node.x = xForDepth(depth);
+    node.y = top + node._subH/2;
+    if(!(node.collapsed) && node.children.length){ let cursor = top; node.children.forEach((c)=>{ position(c, depth+1, cursor); cursor += c._subH + gapForDepth(c.depth); }); }
+  }
+  
+  function collectVisible(n, arr){ arr.push(n); if(!n.collapsed) n.children.forEach(ch=>collectVisible(ch, arr)); }
+  
+  function computeBounds(nodes){
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    nodes.forEach(n=>{
+      const left  = (FLOW==='rtl' ? n.x - n.width : n.x);
+      const right = (FLOW==='rtl' ? n.x : n.x + n.width);
+      minX = Math.min(minX, left);
+      maxX = Math.max(maxX, right);
+      minY = Math.min(minY, n.y - n.height/2);
+      maxY = Math.max(maxY, n.y + n.height/2);
+    });
+    const MARG = 0;
+    return { w: (maxX - minX) + MARG, h: (maxY - minY) + MARG, minX };
+  }
+
+  let mode = 'fitW'; let userScale = 1; let lockedFit = 1; 
+  var requiredFit; 
+  
+  function applyZoom(){
+    const s = (mode==='fitW') ? lockedFit : userScale;
+    stage.style.transform = `scale(${s})`;
+    const pct = document.getElementById('zoomPct');
+    if(pct) pct.textContent = Math.round(s*100) + '%';
+
+    if(lastW && lastH){
+      const wpx = (mode==='fitW') ? Math.floor(viewport.clientWidth) : Math.ceil(lastW * s);
+      scroller.style.width  = wpx + 'px';
+      scroller.style.height = Math.ceil(lastH * s) + 'px';
+    }
+
+    const tol = 2;
+    let needX = (mode!=='fitW') && ((scroller.offsetWidth - viewport.clientWidth) > tol);
+    let needY = (scroller.offsetHeight - viewport.clientHeight) > tol;
+    if(mode==='fitW'){
+      needX = false;
+      if(lastH && (lastH * Math.max(lockedFit, 0.0001) <= viewport.clientHeight - tol)){
+        needY = false;
+      }
+    }
+    viewport.style.overflowX = needX ? 'auto' : 'hidden';
+    viewport.style.overflowY = needY ? 'auto' : 'hidden';
+    viewport.style.cursor    = (needX || needY) ? 'grab' : 'auto';
+  }
+
+  function layout(animate=false){
+    measure(root);
+    
+    if(DEPTH_FIXED_WIDTH){
+      const byDepth = new Map();
+      (function collect(n){
+        const v = byDepth.get(n.depth)||0; byDepth.set(n.depth, Math.max(v, n.width));
+        n.children.forEach(collect);
+      })(root);
+      (function apply(n){
+        const w = byDepth.get(n.depth)||n.width;
+        n.width = w; 
+        n.children.forEach(apply);
+      })(root);
+    }
+    const beforeIds = new Set(prevVisibleIds);
+
+    subHeight(root); position(root, 0, 0);
+
+    let nodes=[]; collectVisible(root, nodes);
+    const { w, h, minX } = computeBounds(nodes);
+
+    const vpW = viewport.getBoundingClientRect().width;
+    const FIT_MARGIN = parseFloat(CSS.getPropertyValue('--fit-margin')) || 24;
+    const baseFit = Math.min(1.0, (vpW - FIT_MARGIN) / Math.max(1, w));
+    const maxDepthVis = nodes.reduce((m,n)=> Math.max(m, n.depth), 0);
+    let compactCap = 1.0;
+    if (maxDepthVis <= 1) compactCap = 0.75;       
+    else if (maxDepthVis === 2) compactCap = 0.88;  
+    const requiredFit = Math.max(0.2, Math.min(baseFit, compactCap));
+    if(mode==='fitW'){
+      lockedFit = requiredFit;
+      const RIGHT_PAD_PX = 24; const LEFT_PAD_PX = 24;
+      const rightPadUnits = RIGHT_PAD_PX / Math.max(lockedFit, 0.0001);
+      const leftPadUnits  = LEFT_PAD_PX  / Math.max(lockedFit, 0.0001);
+      offsetX = -minX + leftPadUnits;                  
+      stageW  = w + leftPadUnits + rightPadUnits;      
+    } else {
+      const padSide = 60;                                  
+      offsetX = -minX + padSide;
+      stageW  = w + padSide*2;
+    }
+
+    lastW = stageW; lastH = h;
+    stage.style.width  = Math.ceil(stageW) + 'px';
+    stage.style.height = Math.ceil(h) + 'px';
+
+    const sPlace = (mode==='fitW') ? lockedFit : userScale;
+    const rightUnitsByDepth = new Map();
+    const rightSnappedByDepth = new Map();
+    
+    nodes.forEach(n=>{
+      const rightUnits = offsetX + n.x; 
+      const prev = rightUnitsByDepth.get(n.depth);
+      rightUnitsByDepth.set(n.depth, (prev==null? rightUnits : Math.max(prev, rightUnits)));
+    });
+    rightUnitsByDepth.forEach((units, depth)=>{ rightSnappedByDepth.set(depth, Math.round(units * sPlace) / Math.max(sPlace, 0.0001)); });
+
+    nodes.forEach(n=>{
+      const rightEdge = rightSnappedByDepth.get(n.depth);
+      const left = rightEdge - n.width; 
+      const top  = n.y - n.height/2;
+      n.el.style.left = left + 'px';
+      n.el.style.top  = top + 'px';
+      if(n.children.length){ n.el.setAttribute('aria-expanded', String(!n.collapsed)); }
+    });
+
+    edgeOf.clear(); edgeLayer.textContent='';
+    (function drawEdges(n){ if(n.collapsed) return; n.children.forEach(ch=>{
+      const PAD_PARENT = 6;  
+      const PAD_CHILD  = 0;  
+      const parentLeft  = offsetX + (FLOW==='rtl' ? (n.x - n.width) : n.x);
+      const parentRight = offsetX + (FLOW==='rtl' ? n.x : (n.x + n.width));
+      const childRight  = rightSnappedByDepth.get(ch.depth);
+
+      const p1x = (FLOW==='rtl' ? parentLeft  + PAD_PARENT : parentRight - PAD_PARENT);
+      const p2x = (FLOW==='rtl' ? childRight - PAD_CHILD : childRight + PAD_CHILD);
+      const p1y = n.y; const p2y = ch.y;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      const dx=Math.abs(p2x-p1x)*.45; const c1x=(FLOW==='rtl'? p1x-dx: p1x+dx); const c2x=(FLOW==='rtl'? p2x+dx: p2x-dx);
+      path.setAttribute('class','edge'); path.setAttribute('d', `M ${p1x} ${p1y} C ${c1x} ${p1y}, ${c2x} ${p2y}, ${p2x} ${p2y}`);
+      edgeOf.set(ch.id, path);
+      edgeLayer.appendChild(path);
+      drawEdges(ch);
+    }); })(root);
+
+    applyZoom();
+
+    if(animate && openingNode){
+      const dur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--anim-dur'))*1000+20;
+      nodes.forEach(n=>{
+        if(!beforeIds.has(n.id) && isDescendant(n, openingNode)){
+          n.el.classList.add('fade-enter');
+          requestAnimationFrame(()=> n.el.classList.add('fade-active'));
+          setTimeout(()=> n.el.classList.remove('fade-enter','fade-active'), dur);
+          const edge = edgeOf.get(n.id);
+          if(edge){ edge.classList.add('fade-enter'); requestAnimationFrame(()=> edge.classList.add('fade-active')); setTimeout(()=> edge.classList.remove('fade-enter','fade-active'), dur); }
+        }
+      });
+    }
+
+    prevVisibleIds = new Set(nodes.map(n=>n.id));
+
+    stage.style.opacity='1';
+    openingNode = null;
+  }
+
+  function animateClose(node, done){
+    const list=[];
+    function collectDesc(n){ if(!n || n.collapsed) return; list.push(n); n.children.forEach(collectDesc); }
+    node.children.forEach(collectDesc);
+
+    const dur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--anim-dur'))*1000+20;
+    list.forEach(n=>{
+      if(n.el){ n.el.classList.add('fade-exit'); requestAnimationFrame(()=> n.el.classList.add('fade-active')); setTimeout(()=> n.el.classList.remove('fade-exit','fade-active'), dur); }
+      const edge = edgeOf.get(n.id); if(edge){ edge.classList.add('fade-exit'); requestAnimationFrame(()=> edge.classList.add('fade-active')); setTimeout(()=> edge.classList.remove('fade-exit','fade-active'), dur); }
+    });
+    setTimeout(done, dur);
+  }
+
+  function handleToggle(n){
+    if(n.collapsed){
+      if(n.el) n.el.setAttribute('aria-expanded','true');
+      openingNode = n;
+      n.collapsed = false;
+      layout(true);
+    } else {
+      if(n.el) n.el.setAttribute('aria-expanded','false');
+      animateClose(n, ()=>{ collapseDeep(n); layout(false); });
+    }
+  }
+
+  const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
+  const currentScale = ()=> (mode==='fitW' ? lockedFit : userScale);
+
+  document.getElementById('zoomIn').addEventListener('click', ()=>{
+    const base = (mode==='fitW') ? lockedFit : userScale;
+    mode='free';
+    userScale = clamp(base + 0.10, 0.2, 3);
+    applyZoom();
+  });
+  document.getElementById('zoomOut').addEventListener('click', ()=>{
+    const base = (mode==='fitW') ? lockedFit : userScale;
+    mode='free';
+    userScale = clamp(base - 0.10, 0.2, 3);
+    applyZoom();
+  });
+  document.getElementById('zoomPct').addEventListener('click', ()=>{ mode='free'; userScale=1; applyZoom(); });
+  document.getElementById('fitW').addEventListener('click', ()=>{ mode='fitW'; layout(false); });
+
+  function canPan(){
+    const tol = 2;
+    let needX = (mode!=='fitW') && ((scroller.offsetWidth - viewport.clientWidth) > tol);
+    let needY = (scroller.offsetHeight - viewport.clientHeight) > tol;
+    if(mode==='fitW'){
+      needX = false;
+      if(lastH && (lastH * Math.max(lockedFit, 0.0001) <= viewport.clientHeight - tol)){
+        needY = false;
+      }
+    }
+    return needX || needY;
+  }
+  
+  viewport.addEventListener('pointerdown', e=>{
+    if(e.button!==0) return;
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(!canPan()) return;
+    panPending = true;
+    isPanning = false;
+    startX = e.clientX; startY = e.clientY;
+    startScrollL = viewport.scrollLeft; startScrollT = viewport.scrollTop;
+  });
+  
+  viewport.addEventListener('pointermove', e=>{
+    if(!(panPending || isPanning)) return;
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    if(!isPanning){
+      if(Math.abs(dx) + Math.abs(dy) < 4) return;
+      isPanning = true;
+      try{ viewport.setPointerCapture(e.pointerId);}catch(_){ }
+      viewport.style.cursor = 'grabbing';
+    }
+    viewport.scrollLeft = startScrollL - dx;
+    viewport.scrollTop = startScrollT - dy;
+  });
+  
+  function endPan(){ panPending=false; isPanning=false; viewport.style.cursor = (canPan()? 'grab':'auto'); }
+  viewport.addEventListener('pointerup', endPan);
+  viewport.addEventListener('pointercancel', endPan);
+  viewport.addEventListener('pointerleave', endPan);
+
+  viewport.addEventListener('touchstart', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(e.touches.length===2){
+      pinchStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartScale = currentScale();
+      mode='free';
+    }
+  }, {passive:true});
+  
+  viewport.addEventListener('touchmove', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(e.touches.length===2 && pinchStartDist>0){
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      userScale = clamp(pinchStartScale * (dist / pinchStartDist), 0.2, 3);
+      applyZoom();
+    }
+  }, {passive:false});
+  viewport.addEventListener('touchend', e=>{ if(e.touches.length<2){ pinchStartDist=0; } });
+
+  viewport.addEventListener('wheel', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(!e.ctrlKey) return; 
+    e.preventDefault();
+    mode='free';
+    const s = currentScale();
+    userScale = clamp(s * Math.exp(-e.deltaY/500), 0.2, 3);
+    applyZoom();
+  }, {passive:false});
+
+  document.getElementById('expandAll').addEventListener('click', ()=>{ (function open(n){ n.collapsed=false; n.children.forEach(open); })(root); layout(true); });
+  document.getElementById('collapseAll').addEventListener('click', ()=>{ (function close(n){ if(n!==root) n.collapsed=true; n.children.forEach(close); })(root); layout(true); });
+
+  updateSafeTop();
+  sizeViewport();
+  layout(false);
+  window.addEventListener('resize', ()=>{ updateSafeTop(); sizeViewport(); layout(false); });
+})();
+</script>
+</body>
+</html>
