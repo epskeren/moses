@@ -224,7 +224,7 @@
 
   <div class="map-header">
     <h1 class="map-title">משה — סיפורו של מנהיג</h1>
-    <p class="map-subtitle">11 תחנות במסע מנהיגות אחד</p>
+    <p class="map-subtitle">9 תחנות במסע מנהיגות אחד</p>
   </div>
 
   <div class="timeline" id="timeline"></div>
@@ -310,6 +310,25 @@ const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.15 });
 cards.forEach(c => io.observe(c));
+
+// דיווח גובה התוכן לעמוד העוטף (Moodle), כדי שה-iframe יתאים את עצמו
+// ולא ייווצר פס גלילה פנימי - הגלילה נשארת רק בעמוד עצמו.
+function sendHeight() {
+  window.parent.postMessage(
+    { type: 'moshe-map-height', height: document.body.scrollHeight },
+    '*'
+  );
+}
+window.addEventListener('load', sendHeight);
+window.addEventListener('resize', sendHeight);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(sendHeight);
+}
+// אחרי כל פתיחה/סגירה של קובייה (משנה גובה) - לדווח שוב בסיום האנימציה
+document.querySelectorAll('.t-panel').forEach(panel => {
+  panel.addEventListener('transitionend', sendHeight);
+});
+sendHeight();
 </script>
 
 </body>
