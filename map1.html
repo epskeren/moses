@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- גרסה: v13 (16.08.2026) — נוסף פריט "פרומו" שהושמט בטעות כראשון תחת פרק 0 -->
+<!-- גרסה: v14 (16.08.2026) — תוקן: מרכוז flex גרם לחלק עליון של תוכן חורג (בזום) להיות בלתי-נגיש בגלילה. עכשיו עוברים אוטומטית למצב גלילה רגיל (בלי flex-centering) כשצריך לגלול, וחוזרים למרכוז רק כשהתוכן נכנס בשלמותו -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8" />
@@ -399,6 +399,18 @@
     viewport.style.overflowX = needX ? 'auto' : 'hidden';
     viewport.style.overflowY = needY ? 'auto' : 'hidden';
     viewport.style.cursor    = (needX || needY) ? 'grab' : 'auto';
+    /* ⭐ תיקון: מרכוז עם flex (align-items:center) גורם לחלק מהתוכן
+       החורג להיות בלתי-נגיש בגלילה - תופעה ידועה בדפדפנים. הפתרון:
+       להשתמש במרכוז רק כשהתוכן נכנס בשלמותו (אין צורך בגלילה), ולעבור
+       למצב רגיל (בלי flex-centering) ברגע שצריך לגלול - כדי שכל הגלילה
+       תהיה נגישה במלואה. */
+    if (needX || needY) {
+      viewport.style.display = 'block';
+    } else {
+      viewport.style.display = 'flex';
+      viewport.style.alignItems = 'center';
+      viewport.style.justifyContent = 'center';
+    }
   }
 
   function layout(animate=false){
