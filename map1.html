@@ -1,192 +1,649 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- גרסה: v11 (16.08.2026) — תוקן: מצב "התאמה"/"פתח-הכל"/"סגור-הכל" הדביק את התוכן לימין המסך במקום למרכז. הסיבה: רוחב ה-scroller נכפה להיות כרוחב מלא של ה-viewport במצב fitW. עכשיו תמיד משתמשים ברוחב האמיתי של התוכן, כך שהמרכוז האוטומטי עובד עקבי בכל המצבים -->
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מפת קורס - משה: סיפורו של מנהיג (גרסה 6)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>משה – סיפורו של מנהיג — Mind‑Map Standalone</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * {
-    box-sizing: border-box;
-    font-family: 'Fredoka', 'FedraSansBarilan-Book', -apple-system, BlinkMacSystemFont,
-                 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  :root{
+    --font:'Fredoka', system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --bg:#ffffff; --ink:#000a11;
+    --chip-h:48px;
+    --col-step:400px;
+    --col-step-d23:400px;
+    --gap-x:36px;
+    --gap-y:40px; --gap-rootcat:24px;
+    --gap-d3:22px;
+    --gap-d4:22px;
+    --gap-cat:22px;
+    --gap-item:6px;
+    --r:9999px; --shadow:0 8px 22px rgba(37,71,104,.10);
+    --edge:#cedfef; --toggle:#254768;
+    --anim-dur:.60s; --anim-ease:ease-in-out;
+    --fit-margin:32;
+  }
+  *{box-sizing:border-box}
+  html, body, button, input, select, textarea, .chip, .zoombar, .zoombar button, .pct, .label { font-family: var(--font) !important; }
+  html,body{height:auto;min-height:100%; overflow-x:hidden}
+  body{margin:0;background:var(--bg);color:var(--ink);}
+  .wrap{padding:12px; width:100%; max-width:none; margin:0 auto; overflow:visible}
+
+  .zoombar{position:sticky; top:0; display:flex; gap:13px; z-index:3; align-items:center; justify-content:center; touch-action:auto; cursor:auto; background:#fff; padding:16px; margin:0 0 16px; border-radius:9999px; border:1px solid #cedfef}
+  .zoombar button{border:0; border-radius:10px; padding:8px 10px; font-family:inherit; font-weight:700; cursor:pointer; background:#ebf2f7; color:#254768}
+  .zoombar .zoom-group{display:flex; align-items:center; gap:4px; margin-inline-start:16px}
+  .zoombar .pct{min-width:68px; text-align:center}
+
+  .viewport{position:relative; width:100%; height:auto; overflow:hidden; touch-action:none; cursor:grab; display:flex; align-items:center; justify-content:center}
+  .scroller{position:relative;}
+  .stage{position:relative; min-height:380px; min-width:0; transform-origin: top right; opacity:0}
+  .chips{position:absolute; inset:0; z-index:1}
+  svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible; z-index:0}
+
+  /* קפסולות - אותה שפה עיצובית כמו קפסולת הכותרת בקורס */
+  .chip{position:absolute; display:inline-flex; align-items:center; justify-content:flex-start; flex-direction:row; height:var(--chip-h); padding:0 16px; border-radius:var(--r);
+        line-height:1; white-space:nowrap; box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.6);
+        direction: rtl; text-align:right; font-weight:600; gap:14px;
+        background: var(--chip-bg, #ffffff); color:#000a11;}
+  .chip[data-kind="root"]{font-weight:700}
+  .label{pointer-events:none}
+
+  .toggle{position:relative; width:28px;height:28px;border-radius:50%;flex:0 0 auto;background:var(--toggle); cursor:pointer; border:0}
+  .toggle .bar{position:absolute; left:50%; top:50%; width:14px; height:2px; background:#fff; border-radius:2px; transform:translate(-50%,-50%); transition: opacity var(--anim-dur) var(--anim-ease)}
+  .toggle .bar.v{transform:translate(-50%,-50%) rotate(90deg); transition: opacity var(--anim-dur) var(--anim-ease)}
+  .chip[aria-expanded="true"] .toggle .bar.v{opacity:0}
+
+  .edge{fill:none; stroke:var(--edge); stroke-width:2; stroke-linecap:round}
+
+  .fade-enter{ opacity:0.001 }
+  .fade-enter.fade-active{ opacity:1; transition: opacity var(--anim-dur) var(--anim-ease) }
+  .fade-exit{ opacity:1 }
+  .fade-exit.fade-active{ opacity:0; transition: opacity var(--anim-dur) var(--anim-ease) }
+
+  @media (prefers-reduced-motion: reduce){
+    .fade-enter.fade-active,.fade-exit.fade-active{transition:none}
   }
 
-  body {
-    background: #ffffff;
-    color: #000a11;
-    margin: 0;
-    padding: 0 24px 60px 24px;
-    direction: rtl;
-  }
-
-  /* ---------- כותרת + לוגו ---------- */
-  .map-header {
-    max-width: 1024px;
-    margin: 32px auto 32px auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .map-header-text .map-title {
-    font-family: 'Fredoka', sans-serif !important; font-weight: 700 !important;
-    font-weight: 700;
-    font-size: 32px;
-    margin: 0 0 6px 0;
-  }
-  .map-header-text .map-subtitle {
-    color: #254768;
-    font-size: 16px;
-    margin: 0;
-  }
-  .map-logo {
-    height: 64px;
-    width: auto;
-    flex-shrink: 0;
-  }
-
-  /* ---------- גריד הכרטיסים ---------- */
-  .river-track {
-    max-width: 1024px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-    align-items: start;
-  }
-
-  /* ---------- כרטיס פרק ---------- */
-  .card {
-    background: #ffffff;
-    border: 1px solid #cedfef;
-    border-radius: 24px;
-    box-shadow: 0 2px 10px rgba(46,74,80,.07);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    align-self: start;
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 22px rgba(37,71,104,.15);
-  }
-
-  .card-top {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 20px 18px;
-    background: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
-    cursor: pointer;
-  }
-
-  /* מספר + שם היחידה יחד, אותו צבע לכל הכרטיסים (פתיחה/סיכום/רגילים) */
-  .card-eyebrow {
-    font-size: 18px;
-    line-height: 1.3;
-    font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
-    font-weight: 700;
-    color: #000a11 !important;
-  }
-
-  .card-body {
-    padding: 14px 18px 18px 18px;
-    cursor: pointer;
-  }
-  .card-count {
-    font-size: 12px;
-    color: #6b7280;
-    margin: 0;
-  }
-
-  .card-expand {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  .card.open .card-expand {
-    max-height: 400px;
-    margin-top: 12px;
-  }
-  .card-expand ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid #ebf2f7;
-    padding-top: 10px;
-  }
-  .card-expand li {
-    padding: 5px 0;
-    font-size: 13.5px;
-  }
-  .card-expand a {
-    color: #254768;
-    text-decoration: none;
-  }
-  .card-expand a:hover {
-    color: #569eb8;
-    text-decoration: underline;
-  }
+  @media (max-width:900px){:root{--chip-h:44px; --col-step:340px}}
 </style>
 </head>
 <body>
-
-  <div class="map-header">
-    <div class="map-header-text">
-      <h1 class="map-title">מפת הקורס</h1>
-      <p class="map-subtitle">משה — סיפורו של מנהיג</p>
+<div class="wrap">
+  <div class="zoombar" aria-label="Zoom controls">
+    <button id="fitW" title="התאם לרוחב">↔︎ התאמה</button>
+    <button id="expandAll" title="פתח הכל">פתח־הכל</button>
+    <button id="collapseAll" title="סגור הכל">סגור־הכל</button>
+    <div class="zoom-group">
+      <button id="zoomOut" title="Zoom out">−</button>
+      <button id="zoomPct" class="pct" title="100%">100%</button>
+      <button id="zoomIn" title="Zoom in">+</button>
     </div>
-    <img class="map-logo" src="https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@LOGO_SVG.svg" alt="לוגו הקורס - משה: סיפורו של מנהיג">
   </div>
 
-  <div class="river-track" id="riverTrack"></div>
-
-<script>
-const courseMap = [
-  { title: "לפני שמתחילים", type: "intro", items: ["איך לומדים פה?", "סילבוס", "למה משה? למה עכשיו?", "ברוכים הבאים"] },
-  { title: "לידתו של מנהיג", items: ["פתיחה", "כוורת נשית", "פרשנות", "ניתוח טקסט", "סיפורי לידה", "משה הילד והאיש", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "הבחירה להנהיג", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "מנהיג נולד", "על גאולת ישראל", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "רגע ההקדשה", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "סצינות הקדשה", "חיפוש משמעות", "מעשי משה", "טרמינולוגיה", "שאלות הערכה", "סיכום", "יציאת מצרים"] },
-  { title: "המנהיג כמתווך", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "גישור", "חלקו של אהרן", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "מנהיגות במשבר", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "משה ובגין", "הרועה והגיבור", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "תום עידן", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "חטא משה בעידן ה-AI", "כישוף ומונותאיזם", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "העברת השרביט", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "ממשה ליהושע", "הנהגה אחרת", "חונכות במקרא", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "הנאום האחרון", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "נאום כצוואה", "נאום הפרישה", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "זה סיפור פרידה", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "אפילוג ספרותי", "משה איש האלוהים", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
-  { title: "סיכום הקורס", type: "summary", items: ["מטלת סיכום"] },
-];
-
-const track = document.getElementById('riverTrack');
-
-courseMap.forEach((station, idx) => {
-  const card = document.createElement('div');
-  card.className = 'card' + (station.type ? ' ' + station.type : '');
-
-  const eyebrow = `${idx} - ${station.title}`;
-
-  card.innerHTML = `
-    <div class="card-top">
-      <span class="card-eyebrow">${eyebrow}</span>
-    </div>
-    <div class="card-body">
-      <p class="card-count">${station.items.length} תתי-נושאים</p>
-      <div class="card-expand">
-        <ul>${station.items.map(item => `<li><a href="#">${item}</a></li>`).join('')}</ul>
+  <div id="viewport" class="viewport">
+    <div id="scroller" class="scroller">
+      <div id="app" class="stage">
+        <svg id="edges" aria-hidden="true"></svg>
+        <div id="chips" class="chips"></div>
       </div>
     </div>
-  `;
+  </div>
+</div>
 
-  card.addEventListener('click', () => {
-    card.classList.toggle('open');
-  });
+<!-- === DATA (משה - סיפורו של מנהיג) === -->
+<script id="mindmap-data" type="application/json">
+{
+  "dir": "rtl",
+  "flow": "rtl",
+  "root": {
+    "label": "משה - סיפורו של מנהיג",
+    "children": [
+      {"label":"0 - לפני שמתחילים","children":[
+        {"label":"איך לומדים פה?"},
+        {"label":"סילבוס"},
+        {"label":"למה משה? למה עכשיו?"},
+        {"label":"ברוכים הבאים"}
+      ]},
 
-  track.appendChild(card);
-});
+      {"label":"1 - לידתו של מנהיג","children":[
+        {"label":"פתיחה"},
+        {"label":"כוורת נשית"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"סיפורי לידה: משה, סרגון והורוס"},
+        {"label":"משה הילד והאיש"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"2 - הבחירה להנהיג","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"מנהיג נולד: מוסר בגיל הרך"},
+        {"label":"על גאולת ישראל והאומות"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"3 - רגע ההקדשה","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"סצינות הקדשה: בקולנוע ובמקרא"},
+        {"label":"חיפוש משמעות: בין משה לציונות"},
+        {"label":"מעשי משה סימן לישראל"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"},
+        {"label":"יציאת מצרים"}
+      ]},
+
+      {"label":"4 - המנהיג כמתווך","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"גישור: בין הפטיש לסדן"},
+        {"label":"חלקו של אהרן במעשה העגל"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"5 - מנהיגות במשבר","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"משה ובגין: מנהיגים במשבר"},
+        {"label":"בין הרועה לגיבור העל"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"6 - תום עידן","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"חטא משה בעידן ה-AI"},
+        {"label":"כישוף, מונותאיזם וטעויותיו של משה"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"7 - העברת השרביט","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"חילופי הנהגה: ממשה ליהושע"},
+        {"label":"הנהגה אחרת: ממנים מחליף"},
+        {"label":"עיצוב מנהיגות באמצעות חונכות במקרא"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"8 - הנאום האחרון","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"פרידת המנהיג: נאום כצוואה"},
+        {"label":"נאום הפרישה של משה"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"9 - זה סיפור פרידה","children":[
+        {"label":"פתיחה"},
+        {"label":"פרשנות"},
+        {"label":"ניתוח טקסט"},
+        {"label":"אפילוג ספרותי: כיצד לסיים סיפור?"},
+        {"label":"משה איש האלוהים"},
+        {"label":"טרמינולוגיה מנהיגותית"},
+        {"label":"שאלות הערכה"},
+        {"label":"סיכום"}
+      ]},
+
+      {"label":"10 - סיכום הקורס","children":[
+        {"label":"מטלת סיכום"}
+      ]}
+    ]
+  }
+}
 </script>
 
+<script>
+(function(){
+  let data; try{ data = JSON.parse(document.getElementById('mindmap-data').textContent); }catch(e){ console.error('Mindmap JSON parse error:', e); data = {"dir":"rtl","flow":"rtl","root":{"label":"שגיאת נתונים – נא לבדוק JSON","children":[]}}; }
+
+  const DIR = (data.dir||'rtl'); document.documentElement.setAttribute('dir', DIR);
+  const FLOW = (data.flow||'rtl');
+  const viewport = document.getElementById('viewport');
+  const stage = document.getElementById('app');
+  const scroller = document.getElementById('scroller');
+  const chipLayer = document.getElementById('chips');
+  const edgeLayer = document.getElementById('edges');
+
+  function updateSafeTop(){ if(viewport) viewport.style.paddingTop = '0px'; if(scroller) scroller.style.marginTop = '0px'; }
+
+  if(DIR==='ltr'){ stage.style.transformOrigin = 'top left'; stage.style.left='0'; }
+  else { stage.style.transformOrigin = 'top right'; stage.style.right='0'; }
+  stage.style.top='0'; stage.style.position='absolute';
+
+  const CSS = getComputedStyle(document.documentElement);
+  const CHIP_H  = parseFloat(CSS.getPropertyValue('--chip-h'))   || 48;
+  const COL_STEP= parseFloat(CSS.getPropertyValue('--col-step')) || 400;
+  const COL_STEP_D23 = parseFloat(CSS.getPropertyValue('--col-step-d23')) || COL_STEP;
+  const GAP_X   = parseFloat(CSS.getPropertyValue('--gap-x'))    || 36;
+  const GAP_Y   = parseFloat(CSS.getPropertyValue('--gap-y'))    || 40;
+  const GAP_ROOTCAT = parseFloat(CSS.getPropertyValue('--gap-rootcat')) || 24;
+  const GAP_CAT = parseFloat(CSS.getPropertyValue('--gap-cat'))  || 110;
+  const GAP_ITEM= parseFloat(CSS.getPropertyValue('--gap-item')) || 36;
+  const GAP_D3 = parseFloat(CSS.getPropertyValue('--gap-d3')) || GAP_ITEM;
+  const GAP_D4 = parseFloat(CSS.getPropertyValue('--gap-d4')) || GAP_ITEM;
+
+  /* פלטת הצבעים של משה לפי עומק: שורש כהה, ואז גוונים יורדים של תכלת
+     עד לירוק-תכלת (הטורקיז שכבר בשימוש להדגשות בקורס) בעלים */
+  const DEPTH_COLORS = {0:'#254768', 1:'#b0cbec', 2:'#cedfef', 3:'#e8f1fa', 4:'#f5f9fa'};
+  const DEPTH_TEXT_LIGHT = new Set([0]); /* עומק עם רקע כהה מקבל טקסט לבן */
+  const DEPTH_FIXED_WIDTH = false; // הוחזר לרוחב טבעי - הבאג האמיתי היה היפוך הכיוון הכפול ב-CSS (תוקן ב-v5), לא הרוחב
+
+  function build(raw, depth=0, parent=null){
+    const node = { label: raw.label, depth, parent, collapsed: !!raw.collapsed, x:0,y:0,width:0,height:CHIP_H, el:null, id: Math.random().toString(36).slice(2), _subH:0, children: [], gapOverride: (typeof raw.gap==='number'? raw.gap : null) };
+    (raw.children||[]).forEach(ch=> node.children.push(build(ch, depth+1, node)));
+    return node;
+  }
+  const root = build(data.root, 0, null);
+  // ⭐ ברירת מחדל: מצב סגור - השורש נשאר פתוח (כדי להציג את רשימת הפרקים),
+  // אך כל פרק (ומה שמתחתיו) סגור עד שלוחצים עליו
+  root.children.forEach(c => collapseDeep(c));
+
+  function gapForDepth(depth){
+    if(depth>=4) return GAP_D4;
+    if(depth===3) return GAP_D3;
+    if(depth===2) return GAP_CAT;
+    if(depth===1) return GAP_ROOTCAT;
+    return GAP_Y;
+  }
+
+  function collapseDeep(n){ n.collapsed = true; n.children.forEach(c=>collapseDeep(c)); }
+
+  let openingNode = null;
+  let edgeOf = new Map();
+  const PAD = 6;
+  let prevVisibleIds = new Set();
+  let lastW = 0, lastH = 0;
+  let offsetX = 0, stageW = 0;
+  let isPanning=false, panPending=false, startX=0, startY=0, startScrollL=0, startScrollT=0; const DRAG_T=4;
+  let pinchStartDist=0, pinchStartScale=1;
+  function sizeViewport(){
+    const rect = viewport.getBoundingClientRect();
+    const avail = window.innerHeight - rect.top - 16;
+    viewport.style.height = Math.max(320, Math.floor(avail)) + 'px';
+  }
+
+  function isDescendant(node, anc){ let p=node.parent; while(p){ if(p===anc) return true; p=p.parent; } return false; }
+
+  function makeToggle(){
+    const btn = document.createElement('button');
+    btn.className = 'toggle'; btn.setAttribute('aria-label','פתח/סגור');
+    btn.innerHTML = '<i class="bar h"></i><i class="bar v"></i>';
+    return btn;
+  }
+
+  function ensureChip(node){
+    if(node.el) return;
+    const el = document.createElement('div'); el.className = 'chip';
+    el.dataset.kind = node.depth===0 ? 'root' : (node.children.length? 'cat':'leaf');
+    const label = document.createElement('span'); label.className='label'; label.textContent=node.label; el.appendChild(label);
+    if(node.children.length){
+      const t = makeToggle(); el.appendChild(t);
+      el.setAttribute('aria-expanded', String(!node.collapsed));
+      t.addEventListener('click', ev => { ev.stopPropagation(); handleToggle(node); });
+      el.setAttribute('tabindex','0'); el.setAttribute('role','button');
+      el.addEventListener('keydown', ev=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); handleToggle(node); } });
+    }
+    const base = DEPTH_COLORS[Math.min(node.depth,4)] || DEPTH_COLORS[4];
+    el.style.setProperty('--chip-bg', base);
+    if(DEPTH_TEXT_LIGHT.has(Math.min(node.depth,4))){ el.style.color = '#ffffff'; }
+    chipLayer.appendChild(el); node.el=el;
+  }
+  (function collect(n){ ensureChip(n); n.children.forEach(collect); })(root);
+
+  function measure(node){
+    node.el.style.left = '-10000px';
+    node.el.style.top = '-10000px';
+    const natural = Math.max(140, node.el.offsetWidth);
+    node.width = natural;
+    node.children.forEach(measure);
+  }
+  function subHeight(node){
+    if(node.collapsed || node.children.length===0){ node._subH = node.height; return node._subH; }
+    let total = 0;
+    node.children.forEach((c,i)=>{
+      subHeight(c);
+      total += c._subH;
+      if(i>0){
+        const localGap = (node.gapOverride != null) ? node.gapOverride : gapForDepth(c.depth);
+        total += localGap;
+      }
+    });
+    node._subH = Math.max(node.height, total); return node._subH;
+  }
+
+  function xForDepth(depth){
+    let acc = 0;
+    for(let i=0;i<depth;i++){
+      const step = (i===2 ? COL_STEP_D23 : COL_STEP);
+      acc += (step + GAP_X);
+  }
+    return acc * (FLOW==='rtl' ? -1 : 1);
+  }
+
+  function position(node, depth, top){
+    node.x = xForDepth(depth);
+    node.y = top + node._subH/2;
+    if(!(node.collapsed) && node.children.length){ let cursor = top; node.children.forEach((c)=>{ position(c, depth+1, cursor); cursor += c._subH + gapForDepth(c.depth); }); }
+  }
+  function collectVisible(n, arr){ arr.push(n); if(!n.collapsed) n.children.forEach(ch=>collectVisible(ch, arr)); }
+  function computeBounds(nodes){
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    nodes.forEach(n=>{
+      const left  = (FLOW==='rtl' ? n.x - n.width : n.x);
+      const right = (FLOW==='rtl' ? n.x : n.x + n.width);
+      minX = Math.min(minX, left);
+      maxX = Math.max(maxX, right);
+      minY = Math.min(minY, n.y - n.height/2);
+      maxY = Math.max(maxY, n.y + n.height/2);
+    });
+    const MARG = 0;
+    return { w: (maxX - minX) + MARG, h: (maxY - minY) + MARG, minX };
+  }
+
+  let mode = 'fitW'; let userScale = 1; let lockedFit = 1;
+  var requiredFit;
+  function applyZoom(){
+    const s = (mode==='fitW') ? lockedFit : userScale;
+    stage.style.transform = `scale(${s})`;
+    const pct = document.getElementById('zoomPct');
+    if(pct) pct.textContent = Math.round(s*100) + '%';
+
+    if(lastW && lastH){
+      /* ⭐ תוקן: קודם, במצב fitW, הרוחב הפנימי נכפה להיות בדיוק כרוחב כל
+         ה-viewport, מה שגרם לתוכן (המעוגן מימין בפנים) להידבק לימין
+         המסך במקום להתמרכז. עכשיו תמיד משתמשים ברוחב האמיתי של התוכן
+         בשני המצבים - כך המרכוז האוטומטי (flex על ה-viewport) עובד
+         באופן עקבי גם ב"התאמה"/"פתח-הכל"/"סגור-הכל" וגם בזום חופשי. */
+      const wpx = Math.ceil(lastW * s);
+      scroller.style.width  = wpx + 'px';
+      scroller.style.height = Math.ceil(lastH * s) + 'px';
+    }
+
+    const tol = 2;
+    let needX = (mode!=='fitW') && ((scroller.offsetWidth - viewport.clientWidth) > tol);
+    let needY = (scroller.offsetHeight - viewport.clientHeight) > tol;
+    if(mode==='fitW'){
+      needX = false;
+      if(lastH && (lastH * Math.max(lockedFit, 0.0001) <= viewport.clientHeight - tol)){
+        needY = false;
+      }
+    }
+    viewport.style.overflowX = needX ? 'auto' : 'hidden';
+    viewport.style.overflowY = needY ? 'auto' : 'hidden';
+    viewport.style.cursor    = (needX || needY) ? 'grab' : 'auto';
+  }
+
+  function layout(animate=false){
+    measure(root);
+    if(DEPTH_FIXED_WIDTH){
+      const byDepth = new Map();
+      (function collect(n){
+        const v = byDepth.get(n.depth)||0; byDepth.set(n.depth, Math.max(v, n.width));
+        n.children.forEach(collect);
+      })(root);
+      (function apply(n){
+        const w = byDepth.get(n.depth)||n.width;
+        n.width = w;
+        n.children.forEach(apply);
+      })(root);
+    }
+    const beforeIds = new Set(prevVisibleIds);
+
+    subHeight(root); position(root, 0, 0);
+
+    let nodes=[]; collectVisible(root, nodes);
+    const { w, h, minX } = computeBounds(nodes);
+
+    const vpW = viewport.getBoundingClientRect().width;
+    const vpH = viewport.getBoundingClientRect().height;
+    const FIT_MARGIN = parseFloat(CSS.getPropertyValue('--fit-margin')) || 24;
+    const baseFitW = Math.min(1.0, (vpW - FIT_MARGIN) / Math.max(1, w));
+    const baseFitH = Math.min(1.0, (vpH - FIT_MARGIN) / Math.max(1, h)); /* ⭐ חדש: התחשבות בגובה כדי שלא תידרש גלילה אנכית */
+    const baseFit = Math.min(baseFitW, baseFitH);
+    const maxDepthVis = nodes.reduce((m,n)=> Math.max(m, n.depth), 0);
+    let compactCap = 1.0;
+    if (maxDepthVis <= 1) compactCap = 0.75;
+    else if (maxDepthVis === 2) compactCap = 0.88;
+    const requiredFit = Math.max(0.2, Math.min(baseFit, compactCap));
+    if(mode==='fitW'){
+      lockedFit = requiredFit;
+      const RIGHT_PAD_PX = 24; const LEFT_PAD_PX = 24;
+      const rightPadUnits = RIGHT_PAD_PX / Math.max(lockedFit, 0.0001);
+      const leftPadUnits  = LEFT_PAD_PX  / Math.max(lockedFit, 0.0001);
+      offsetX = -minX + leftPadUnits;
+      stageW  = w + leftPadUnits + rightPadUnits;
+    } else {
+      const padSide = 60;
+      offsetX = -minX + padSide;
+      stageW  = w + padSide*2;
+    }
+
+    lastW = stageW; lastH = h;
+    stage.style.width  = Math.ceil(stageW) + 'px';
+    stage.style.height = Math.ceil(h) + 'px';
+
+    const sPlace = (mode==='fitW') ? lockedFit : userScale;
+    const rightUnitsByDepth = new Map();
+    const rightSnappedByDepth = new Map();
+    nodes.forEach(n=>{
+      const rightUnits = offsetX + n.x;
+      const prev = rightUnitsByDepth.get(n.depth);
+      rightUnitsByDepth.set(n.depth, (prev==null? rightUnits : Math.max(prev, rightUnits)));
+    });
+    rightUnitsByDepth.forEach((units, depth)=>{ rightSnappedByDepth.set(depth, Math.round(units * sPlace) / Math.max(sPlace, 0.0001)); });
+
+    nodes.forEach(n=>{
+      const rightEdge = rightSnappedByDepth.get(n.depth);
+      const left = rightEdge - n.width;
+      const top  = n.y - n.height/2;
+      n.el.style.left = left + 'px';
+      n.el.style.top  = top + 'px';
+      n.el.style.width = n.width + 'px'; /* ⭐ התיקון האמיתי: בלי זה, n.width היה רק מספר
+                                             פנימי ב-JS ולא השפיע בפועל על גודל האלמנט
+                                             המצויר על המסך - זו הייתה הסיבה שהיישור
+                                             נשבר גם אחרי DEPTH_FIXED_WIDTH=true */
+      if(n.children.length){ n.el.setAttribute('aria-expanded', String(!n.collapsed)); }
+    });
+
+    edgeOf.clear(); edgeLayer.textContent='';
+    (function drawEdges(n){ if(n.collapsed) return; n.children.forEach(ch=>{
+      const PAD_PARENT = 6;
+      const PAD_CHILD  = 0;
+      const parentLeft  = offsetX + (FLOW==='rtl' ? (n.x - n.width) : n.x);
+      const parentRight = offsetX + (FLOW==='rtl' ? n.x : (n.x + n.width));
+      const childRight  = rightSnappedByDepth.get(ch.depth);
+
+      const p1x = (FLOW==='rtl' ? parentLeft  + PAD_PARENT : parentRight - PAD_PARENT);
+      const p2x = (FLOW==='rtl' ? childRight - PAD_CHILD : childRight + PAD_CHILD);
+      const p1y = n.y; const p2y = ch.y;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      const dx=Math.abs(p2x-p1x)*.45; const c1x=(FLOW==='rtl'? p1x-dx: p1x+dx); const c2x=(FLOW==='rtl'? p2x+dx: p2x-dx);
+      path.setAttribute('class','edge'); path.setAttribute('d', `M ${p1x} ${p1y} C ${c1x} ${p1y}, ${c2x} ${p2y}, ${p2x} ${p2y}`);
+      edgeOf.set(ch.id, path);
+      edgeLayer.appendChild(path);
+      drawEdges(ch);
+    }); })(root);
+
+    applyZoom();
+
+    if(animate && openingNode){
+      const dur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--anim-dur'))*1000+20;
+      nodes.forEach(n=>{
+        if(!beforeIds.has(n.id) && isDescendant(n, openingNode)){
+          n.el.classList.add('fade-enter');
+          requestAnimationFrame(()=> n.el.classList.add('fade-active'));
+          setTimeout(()=> n.el.classList.remove('fade-enter','fade-active'), dur);
+          const edge = edgeOf.get(n.id);
+          if(edge){ edge.classList.add('fade-enter'); requestAnimationFrame(()=> edge.classList.add('fade-active')); setTimeout(()=> edge.classList.remove('fade-enter','fade-active'), dur); }
+        }
+      });
+    }
+
+    prevVisibleIds = new Set(nodes.map(n=>n.id));
+
+    stage.style.opacity='1';
+    openingNode = null;
+  }
+
+  function animateClose(node, done){
+    const list=[];
+    function collectDesc(n){ if(!n || n.collapsed) return; list.push(n); n.children.forEach(collectDesc); }
+    node.children.forEach(collectDesc);
+
+    const dur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--anim-dur'))*1000+20;
+    list.forEach(n=>{
+      if(n.el){ n.el.classList.add('fade-exit'); requestAnimationFrame(()=> n.el.classList.add('fade-active')); setTimeout(()=> n.el.classList.remove('fade-exit','fade-active'), dur); }
+      const edge = edgeOf.get(n.id); if(edge){ edge.classList.add('fade-exit'); requestAnimationFrame(()=> edge.classList.add('fade-active')); setTimeout(()=> edge.classList.remove('fade-exit','fade-active'), dur); }
+    });
+    setTimeout(done, dur);
+  }
+
+  function handleToggle(n){
+    if(n.collapsed){
+      if(n.el) n.el.setAttribute('aria-expanded','true');
+      openingNode = n;
+      n.collapsed = false;
+      layout(true);
+    } else {
+      if(n.el) n.el.setAttribute('aria-expanded','false');
+      animateClose(n, ()=>{ collapseDeep(n); layout(false); });
+    }
+  }
+
+  const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
+  const currentScale = ()=> (mode==='fitW' ? lockedFit : userScale);
+
+  document.getElementById('zoomIn').addEventListener('click', ()=>{
+    const base = (mode==='fitW') ? lockedFit : userScale;
+    mode='free';
+    userScale = clamp(base + 0.10, 0.2, 3);
+    applyZoom();
+  });
+  document.getElementById('zoomOut').addEventListener('click', ()=>{
+    const base = (mode==='fitW') ? lockedFit : userScale;
+    mode='free';
+    userScale = clamp(base - 0.10, 0.2, 3);
+    applyZoom();
+  });
+  document.getElementById('zoomPct').addEventListener('click', ()=>{ mode='free'; userScale=1; applyZoom(); });
+  document.getElementById('fitW').addEventListener('click', ()=>{ mode='fitW'; layout(false); });
+
+  function canPan(){
+    const tol = 2;
+    let needX = (mode!=='fitW') && ((scroller.offsetWidth - viewport.clientWidth) > tol);
+    let needY = (scroller.offsetHeight - viewport.clientHeight) > tol;
+    if(mode==='fitW'){
+      needX = false;
+      if(lastH && (lastH * Math.max(lockedFit, 0.0001) <= viewport.clientHeight - tol)){
+        needY = false;
+      }
+    }
+    return needX || needY;
+  }
+  viewport.addEventListener('pointerdown', e=>{
+    if(e.button!==0) return;
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(!canPan()) return;
+    panPending = true;
+    isPanning = false;
+    startX = e.clientX; startY = e.clientY;
+    startScrollL = viewport.scrollLeft; startScrollT = viewport.scrollTop;
+  });
+  viewport.addEventListener('pointermove', e=>{
+    if(!(panPending || isPanning)) return;
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    if(!isPanning){
+      if(Math.abs(dx) + Math.abs(dy) < 4) return;
+      isPanning = true;
+      try{ viewport.setPointerCapture(e.pointerId);}catch(_){ }
+      viewport.style.cursor = 'grabbing';
+    }
+    viewport.scrollLeft = startScrollL - dx;
+    viewport.scrollTop = startScrollT - dy;
+  });
+  function endPan(){ panPending=false; isPanning=false; viewport.style.cursor = (canPan()? 'grab':'auto'); }
+  viewport.addEventListener('pointerup', endPan);
+  viewport.addEventListener('pointercancel', endPan);
+  viewport.addEventListener('pointerleave', endPan);
+
+  viewport.addEventListener('touchstart', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(e.touches.length===2){
+      pinchStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartScale = currentScale();
+      mode='free';
+    }
+  }, {passive:true});
+  viewport.addEventListener('touchmove', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(e.touches.length===2 && pinchStartDist>0){
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      userScale = clamp(pinchStartScale * (dist / pinchStartDist), 0.2, 3);
+      applyZoom();
+    }
+  }, {passive:false});
+  viewport.addEventListener('touchend', e=>{ if(e.touches.length<2){ pinchStartDist=0; } });
+
+  viewport.addEventListener('wheel', e=>{
+    if(e.target && e.target.closest && (e.target.closest('.zoombar') || e.target.closest('.toggle'))) return;
+    if(!e.ctrlKey) return;
+    e.preventDefault();
+    mode='free';
+    const s = currentScale();
+    userScale = clamp(s * Math.exp(-e.deltaY/500), 0.2, 3);
+    applyZoom();
+  }, {passive:false});
+
+  document.getElementById('expandAll').addEventListener('click', ()=>{ (function open(n){ n.collapsed=false; n.children.forEach(open); })(root); layout(true); });
+  document.getElementById('collapseAll').addEventListener('click', ()=>{ (function close(n){ if(n!==root) n.collapsed=true; n.children.forEach(close); })(root); layout(true); });
+
+  updateSafeTop();
+  sizeViewport();
+  // ⭐ תיקון: ממתינים שהגופן Fredoka באמת ייטען (לא רק שהדף נטען) לפני
+  // חישוב המיקומים הראשוני. בלי זה, המדידה הראשונית של רוחב הקפסולות
+  // עלולה להתבצע לפי גופן חלופי (עד שFredoka נטען), מה שגורם לטקסט
+  // "לקפוץ" לרוחב אחר אחר-כך בלי שהמפה תיושר מחדש - זו הייתה הסיבה
+  // לכך שהקצה הימני של הקפסולות לא היה מיושר.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { layout(false); });
+  } else {
+    layout(false); // דפדפן ישן שלא תומך ב-Font Loading API
+  }
+  window.addEventListener('resize', ()=>{ updateSafeTop(); sizeViewport(); layout(false); });
+})();
+</script>
 </body>
 </html>
