@@ -63,10 +63,10 @@
     content: '';
     position: absolute;
     top: 0;
-    bottom: 0;
     right: 50%;
     width: 4px;
     margin-right: -2px;
+    height: var(--spine-height, 100%);
     background: linear-gradient(180deg, var(--light2), var(--light1) 50%, var(--light2));
     border-radius: 9999px;
   }
@@ -311,24 +311,27 @@ const io = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 cards.forEach(c => io.observe(c));
 
-// דיווח גובה התוכן לעמוד העוטף (Moodle), כדי שה-iframe יתאים את עצמו
-// ולא ייווצר פס גלילה פנימי - הגלילה נשארת רק בעמוד עצמו.
-function sendHeight() {
+// הקו התוחם (הציר) מקבל גובה מפורש בפיקסלים לפי התוכן בפועל,
+// כדי שלא יסתמך על חישוב אוטומטי (top:0/bottom:0) שעלול לא להימתח
+// כראוי בהקשרים מסוימים (כמו iframe/תצוגה מקדימה).
+function updateLayout() {
+  const h = timeline.scrollHeight;
+  timeline.style.setProperty('--spine-height', h + 'px');
   window.parent.postMessage(
     { type: 'moshe-map-height', height: document.body.scrollHeight },
     '*'
   );
 }
-window.addEventListener('load', sendHeight);
-window.addEventListener('resize', sendHeight);
+window.addEventListener('load', updateLayout);
+window.addEventListener('resize', updateLayout);
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(sendHeight);
+  document.fonts.ready.then(updateLayout);
 }
-// אחרי כל פתיחה/סגירה של קובייה (משנה גובה) - לדווח שוב בסיום האנימציה
+// אחרי כל פתיחה/סגירה של קובייה (משנה גובה) - לחשב שוב בסיום האנימציה
 document.querySelectorAll('.t-panel').forEach(panel => {
-  panel.addEventListener('transitionend', sendHeight);
+  panel.addEventListener('transitionend', updateLayout);
 });
-sendHeight();
+updateLayout();
 </script>
 
 </body>
