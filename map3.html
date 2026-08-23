@@ -128,11 +128,11 @@
     color: var(--navy);
   }
 
-  /* כפתור פתיחה/סגירה - אייקון בלבד, בפינת הקובייה הרחוקה מהציר */
+  /* כפתור פתיחה/סגירה - אייקון בלבד, בתוך הקובייה בפינה הרחוקה מהציר */
   .t-toggle {
     all: unset;
     position: absolute;
-    top: -14px;
+    top: 14px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -142,7 +142,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(37, 71, 104, 0.14);
     transition: border-color .2s ease, transform .15s ease;
   }
   .t-toggle:hover { border-color: var(--turquoise); }
@@ -154,8 +153,14 @@
   }
   .t-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
 
-  .t-item:nth-child(odd) .t-toggle  { right: -14px; }
-  .t-item:nth-child(even) .t-toggle { left: -14px; }
+  .t-item:nth-child(odd) .t-toggle  { right: 14px; }
+  .t-item:nth-child(even) .t-toggle { left: 14px; }
+
+  /* ריווח לטקסט כדי שלא יתנגש עם הכפתור */
+  .t-item:nth-child(odd) .t-eyebrow,
+  .t-item:nth-child(odd) .t-title { padding-right: 34px; }
+  .t-item:nth-child(even) .t-eyebrow,
+  .t-item:nth-child(even) .t-title { padding-left: 34px; }
 
   .t-panel {
     max-height: 0;
@@ -201,7 +206,14 @@
     .t-item:nth-child(odd) .t-toggle,
     .t-item:nth-child(even) .t-toggle {
       right: auto;
-      left: -14px;
+      left: 14px;
+    }
+    .t-item:nth-child(odd) .t-eyebrow,
+    .t-item:nth-child(odd) .t-title,
+    .t-item:nth-child(even) .t-eyebrow,
+    .t-item:nth-child(even) .t-title {
+      padding-right: 0;
+      padding-left: 34px;
     }
   }
 </style>
