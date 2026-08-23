@@ -19,6 +19,11 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html, body {
+    height: auto;
+    overflow: visible;
+  }
+
   body {
     font-family: 'Fredoka', sans-serif;
     background: #ffffff;
@@ -36,16 +41,6 @@
   .map-header {
     text-align: center;
     margin-bottom: 56px;
-  }
-  .map-header .eyebrow {
-    display: inline-block;
-    background: var(--light1);
-    color: var(--navy);
-    font-weight: 600;
-    font-size: 13px;
-    padding: 6px 18px;
-    border-radius: 9999px;
-    margin-bottom: 14px;
   }
   .map-title {
     font-weight: 700;
@@ -79,7 +74,7 @@
   .t-item {
     position: relative;
     width: 50%;
-    padding: 0 44px 44px 44px;
+    padding: 0 44px;
   }
   .t-item:nth-child(odd)  { right: 0; }
   .t-item:nth-child(even) { right: 50%; }
@@ -108,10 +103,12 @@
   .t-item:nth-child(even) .t-node { right: -26px; }
 
   .t-card {
+    position: relative;
     background: #ffffff;
     border: 2px solid var(--light1);
     border-radius: 18px;
     padding: 18px 22px;
+    margin-bottom: 44px;
     opacity: 0;
     transform: translateY(14px);
     transition: opacity .45s ease, transform .45s ease, border-color .2s ease;
@@ -129,31 +126,36 @@
     font-weight: 700;
     font-size: 17px;
     color: var(--navy);
-    margin-bottom: 3px;
-  }
-  .t-count {
-    font-size: 12.5px;
-    color: var(--gray);
-    margin-bottom: 10px;
   }
 
+  /* כפתור פתיחה/סגירה - אייקון בלבד, בפינת הקובייה הרחוקה מהציר */
   .t-toggle {
     all: unset;
+    position: absolute;
+    top: -14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--light2);
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     cursor: pointer;
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--navy);
+    box-shadow: 0 2px 6px rgba(37, 71, 104, 0.14);
+    transition: border-color .2s ease, transform .15s ease;
   }
+  .t-toggle:hover { border-color: var(--turquoise); }
   .t-toggle svg {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
+    color: var(--navy);
     transition: transform .25s ease;
   }
   .t-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  .t-item:nth-child(odd) .t-toggle  { right: -14px; }
+  .t-item:nth-child(even) .t-toggle { left: -14px; }
 
   .t-panel {
     max-height: 0;
@@ -163,12 +165,13 @@
   .t-panel ul {
     list-style: none;
     border-top: 1px solid var(--light1);
-    margin-top: 12px;
+    margin-top: 14px;
     padding-top: 10px;
   }
   .t-panel li {
     padding: 5px 0;
     font-size: 13.5px;
+    color: var(--navy);
   }
   .t-panel a {
     color: var(--navy);
@@ -187,17 +190,20 @@
     .t-item:nth-child(even) {
       width: 100%;
       right: 0;
-      padding: 0 62px 32px 0;
+      padding: 0 62px 0 0;
     }
+    .t-card { margin-bottom: 32px; }
     .t-item:nth-child(odd) .t-node,
     .t-item:nth-child(even) .t-node {
       left: auto;
       right: 0;
     }
+    .t-item:nth-child(odd) .t-toggle,
+    .t-item:nth-child(even) .t-toggle {
+      right: auto;
+      left: -14px;
+    }
   }
-
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-thumb { background: var(--light2); border-radius: 9999px; }
 </style>
 </head>
 <body>
@@ -205,7 +211,6 @@
 <div class="page">
 
   <div class="map-header">
-    <span class="eyebrow">מפת הקורס</span>
     <h1 class="map-title">משה — סיפורו של מנהיג</h1>
     <p class="map-subtitle">11 תחנות במסע מנהיגות אחד</p>
   </div>
@@ -215,6 +220,9 @@
 </div>
 
 <script>
+// כל פריט יכול להיות מחרוזת (בלי קישור) או אובייקט { label, url } (עם קישור).
+// כרגע הכול מחרוזות - אין קישורים. כדי להוסיף קישור לנושא מסוים בעתיד,
+// מחליפים את המחרוזת ל: { label: "שם הנושא", url: "https://..." }
 const courseMap = [
   { title: "לפני שמתחילים", milestone: true,
     items: ["איך לומדים פה?", "סילבוס", "למה משה? למה עכשיו?", "ברוכים הבאים"] },
@@ -250,18 +258,24 @@ courseMap.forEach((station, idx) => {
   const eyebrow = idx === 0 ? 'פתיחה לקורס' : (idx === courseMap.length - 1 ? 'סיום הקורס' : `פרק ${idx}`);
   const panelId = `panel-${idx}`;
 
+  const listHtml = station.items.map(entry => {
+    const label = typeof entry === 'string' ? entry : entry.label;
+    const url = typeof entry === 'string' ? null : entry.url;
+    return url
+      ? `<li><a href="${url}">${label}</a></li>`
+      : `<li><span>${label}</span></li>`;
+  }).join('');
+
   item.innerHTML = `
     <div class="t-node">${numberLabel}</div>
     <div class="t-card">
-      <div class="t-eyebrow">${eyebrow}</div>
-      <div class="t-title">${station.title}</div>
-      <div class="t-count">${station.items.length} תתי-נושאים</div>
-      <button class="t-toggle" aria-expanded="false" aria-controls="${panelId}">
-        <span>פתיחת תוכן</span>
+      <button class="t-toggle" aria-expanded="false" aria-controls="${panelId}" aria-label="פתיחת תוכן">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+      <div class="t-eyebrow">${eyebrow}</div>
+      <div class="t-title">${station.title}</div>
       <div class="t-panel" id="${panelId}" role="region">
-        <ul>${station.items.map(i => `<li><a href="#">${i}</a></li>`).join('')}</ul>
+        <ul>${listHtml}</ul>
       </div>
     </div>
   `;
@@ -271,7 +285,7 @@ courseMap.forEach((station, idx) => {
   toggle.addEventListener('click', () => {
     const open = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!open));
-    toggle.querySelector('span').textContent = open ? 'פתיחת תוכן' : 'סגירת תוכן';
+    toggle.setAttribute('aria-label', open ? 'פתיחת תוכן' : 'סגירת תוכן');
     panel.style.maxHeight = open ? '0' : panel.scrollHeight + 'px';
   });
 
