@@ -1,1 +1,192 @@
-dfdf
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מפת קורס - משה: סיפורו של מנהיג (גרסה 6)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Fredoka', 'FedraSansBarilan-Book', -apple-system, BlinkMacSystemFont,
+                 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  }
+
+  body {
+    background: #ffffff;
+    color: #000a11;
+    margin: 0;
+    padding: 0 24px 60px 24px;
+    direction: rtl;
+  }
+
+  /* ---------- כותרת + לוגו ---------- */
+  .map-header {
+    max-width: 1024px;
+    margin: 32px auto 32px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .map-header-text .map-title {
+    font-family: 'Fredoka', sans-serif !important; font-weight: 700 !important;
+    font-weight: 700;
+    font-size: 32px;
+    margin: 0 0 6px 0;
+  }
+  .map-header-text .map-subtitle {
+    color: #254768;
+    font-size: 16px;
+    margin: 0;
+  }
+  .map-logo {
+    height: 64px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  /* ---------- גריד הכרטיסים ---------- */
+  .river-track {
+    max-width: 1024px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ---------- כרטיס פרק ---------- */
+  .card {
+    background: #ffffff;
+    border: 1px solid #cedfef;
+    border-radius: 24px;
+    box-shadow: 0 2px 10px rgba(46,74,80,.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    align-self: start;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(37,71,104,.15);
+  }
+
+  .card-top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px 18px;
+    background: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
+    cursor: pointer;
+  }
+
+  /* מספר + שם היחידה יחד, אותו צבע לכל הכרטיסים (פתיחה/סיכום/רגילים) */
+  .card-eyebrow {
+    font-size: 18px;
+    line-height: 1.3;
+    font-family: 'Fredoka', sans-serif !important; font-weight: 600 !important;
+    font-weight: 700;
+    color: #000a11 !important;
+  }
+
+  .card-body {
+    padding: 14px 18px 18px 18px;
+    cursor: pointer;
+  }
+  .card-count {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .card-expand {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .card.open .card-expand {
+    max-height: 400px;
+    margin-top: 12px;
+  }
+  .card-expand ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ebf2f7;
+    padding-top: 10px;
+  }
+  .card-expand li {
+    padding: 5px 0;
+    font-size: 13.5px;
+  }
+  .card-expand a {
+    color: #254768;
+    text-decoration: none;
+  }
+  .card-expand a:hover {
+    color: #569eb8;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+  <div class="map-header">
+    <div class="map-header-text">
+      <h1 class="map-title">מפת הקורס</h1>
+      <p class="map-subtitle">משה — סיפורו של מנהיג</p>
+    </div>
+    <img class="map-logo" src="https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@LOGO_SVG.svg" alt="לוגו הקורס - משה: סיפורו של מנהיג">
+  </div>
+
+  <div class="river-track" id="riverTrack"></div>
+
+<script>
+const courseMap = [
+  { title: "לפני שמתחילים", type: "intro", items: ["איך לומדים פה?", "סילבוס", "למה משה? למה עכשיו?", "ברוכים הבאים"] },
+  { title: "לידתו של מנהיג", items: ["פתיחה", "כוורת נשית", "פרשנות", "ניתוח טקסט", "סיפורי לידה", "משה הילד והאיש", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "הבחירה להנהיג", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "מנהיג נולד", "על גאולת ישראל", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "רגע ההקדשה", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "סצינות הקדשה", "חיפוש משמעות", "מעשי משה", "טרמינולוגיה", "שאלות הערכה", "סיכום", "יציאת מצרים"] },
+  { title: "המנהיג כמתווך", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "גישור", "חלקו של אהרן", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "מנהיגות במשבר", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "משה ובגין", "הרועה והגיבור", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "תום עידן", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "חטא משה בעידן ה-AI", "כישוף ומונותאיזם", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "העברת השרביט", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "ממשה ליהושע", "הנהגה אחרת", "חונכות במקרא", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "הנאום האחרון", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "נאום כצוואה", "נאום הפרישה", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "זה סיפור פרידה", items: ["פתיחה", "פרשנות", "ניתוח טקסט", "אפילוג ספרותי", "משה איש האלוהים", "טרמינולוגיה", "שאלות הערכה", "סיכום"] },
+  { title: "סיכום הקורס", type: "summary", items: ["מטלת סיכום"] },
+];
+
+const track = document.getElementById('riverTrack');
+
+courseMap.forEach((station, idx) => {
+  const card = document.createElement('div');
+  card.className = 'card' + (station.type ? ' ' + station.type : '');
+
+  const eyebrow = `${idx} - ${station.title}`;
+
+  card.innerHTML = `
+    <div class="card-top">
+      <span class="card-eyebrow">${eyebrow}</span>
+    </div>
+    <div class="card-body">
+      <p class="card-count">${station.items.length} תתי-נושאים</p>
+      <div class="card-expand">
+        <ul>${station.items.map(item => `<li><a href="#">${item}</a></li>`).join('')}</ul>
+      </div>
+    </div>
+  `;
+
+  card.addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+
+  track.appendChild(card);
+});
+</script>
+
+</body>
+</html>
