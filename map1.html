@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- גרסה: v14 (16.08.2026) — תוקן: מרכוז flex גרם לחלק עליון של תוכן חורג (בזום) להיות בלתי-נגיש בגלילה. עכשיו עוברים אוטומטית למצב גלילה רגיל (בלי flex-centering) כשצריך לגלול, וחוזרים למרכוז רק כשהתוכן נכנס בשלמותו -->
+<!-- גרסה: v15 (16.08.2026) — (1) הוסרו כל ההצללות מהקפסולות. (2) תוקן שוב: המרכוז מטופל בנפרד לכל ציר (אופקי/אנכי) - הגרסה הקודמת ביטלה מרכוז לגמרי כשנדרשה גלילה, מה שגרם לתוכן להידבק לימין גם באזור שלא היה צריך גלילה בו -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8" />
@@ -43,7 +43,7 @@
 
   /* קפסולות - אותה שפה עיצובית כמו קפסולת הכותרת בקורס */
   .chip{position:absolute; display:inline-flex; align-items:center; justify-content:flex-start; flex-direction:row; height:var(--chip-h); padding:0 16px; border-radius:var(--r);
-        line-height:1; white-space:nowrap; box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.6);
+        line-height:1; white-space:nowrap; box-shadow:none;
         direction: rtl; text-align:right; font-weight:600; gap:14px;
         background: var(--chip-bg, #ffffff); color:#000a11;}
   .chip[data-kind="root"]{font-weight:700}
@@ -399,18 +399,15 @@
     viewport.style.overflowX = needX ? 'auto' : 'hidden';
     viewport.style.overflowY = needY ? 'auto' : 'hidden';
     viewport.style.cursor    = (needX || needY) ? 'grab' : 'auto';
-    /* ⭐ תיקון: מרכוז עם flex (align-items:center) גורם לחלק מהתוכן
-       החורג להיות בלתי-נגיש בגלילה - תופעה ידועה בדפדפנים. הפתרון:
-       להשתמש במרכוז רק כשהתוכן נכנס בשלמותו (אין צורך בגלילה), ולעבור
-       למצב רגיל (בלי flex-centering) ברגע שצריך לגלול - כדי שכל הגלילה
-       תהיה נגישה במלואה. */
-    if (needX || needY) {
-      viewport.style.display = 'block';
-    } else {
-      viewport.style.display = 'flex';
-      viewport.style.alignItems = 'center';
-      viewport.style.justifyContent = 'center';
-    }
+    /* ⭐ תוקן שוב: הגרסה הקודמת (v14) ביטלה מרכוז לגמרי ברגע שנדרשה
+       גלילה בציר כלשהו - וזה גרם לתוכן "להידבק" לימין גם כשרק הציר
+       האנכי היה צריך גלילה. עכשיו כל ציר מטופל בנפרד: אם לא נדרשת
+       גלילה אופקית - התוכן ממורכז אופקית; אם לא נדרשת גלילה אנכית -
+       ממורכז אנכית. flex נשאר תמיד דלוק, רק justify/align משתנים
+       לפי הצורך האמיתי בכל ציר. */
+    viewport.style.display = 'flex';
+    viewport.style.justifyContent = needX ? 'flex-start' : 'center';
+    viewport.style.alignItems = needY ? 'flex-start' : 'center';
   }
 
   function layout(animate=false){
