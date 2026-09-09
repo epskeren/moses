@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מקרא עיצוב — קורס משה (קמפוס)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+:root {
+    --moshe-ink: #000a11;
+    --moshe-blue-box-bg: #e8f1fa;
+    --moshe-blue-box-border: #d6e4f6;
+    --moshe-blue-box-text: #254768;
+    --moshe-red-box-bg: #ffeeeb;
+    --moshe-red-box-border: #f6dcd9;
+    --moshe-red-box-text: #b72f1a;
+    --moshe-turquoise: #569eb8;
+    --moshe-header-grad: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
+    --moshe-header-border: #cedfef;
+}
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    color: var(--moshe-ink);
+    background: #fafbfc;
+}
+
+h1.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: 15px;
+    margin-bottom: 40px;
+}
+
+.entry {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.entry-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.entry-name {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.entry-class {
+    font-family: monospace;
+    background: #eef2f6;
+    color: #254768;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    direction: ltr;
+}
+
+.entry-status {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.status-exists { background: #dcfce7; color: #166534; }
+.status-new { background: #fef9c3; color: #854d0e; }
+.status-auto { background: #e0e7ff; color: #3730a3; }
+
+.demo-box { margin: 16px 0; }
+
+.moshe-unit-title {
+    display: block;
+    font-family: 'Fredoka-SemiBold', 'Fredoka-bold', sans-serif;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    font-size: 24px;
+    color: var(--moshe-ink);
+}
+
+.moshe-body-text {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--moshe-ink);
+    text-align: justify;
+}
+
+.moshe-verse-box {
+    background-color: var(--moshe-blue-box-bg);
+    border: 1px solid var(--moshe-blue-box-border);
+    border-radius: 24px;
+    padding: 32px 40px;
+    margin: 0;
+}
+.moshe-verse-box .quote {
+    display: block;
+    font-family: 'Fredoka-SemiBold', sans-serif;
+    font-weight: 700;
+    color: var(--moshe-blue-box-text);
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+.moshe-verse-box .source {
+    display: block;
+    color: var(--moshe-blue-box-text);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.moshe-commentary-box {
+    background-color: var(--moshe-red-box-bg);
+    border: 1px solid var(--moshe-red-box-border);
+    border-radius: 24px;
+    padding: 32px 40px;
+    margin: 0;
+}
+.moshe-commentary-box p {
+    color: var(--moshe-red-box-text);
+    font-family: 'Fredoka-SemiBold', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+}
+.moshe-commentary-box .source {
+    display: block;
+    margin-top: 12px;
+    color: var(--moshe-red-box-text);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.moshe-emphasis {
+    color: var(--moshe-turquoise);
+    font-family: 'Fredoka-SemiBold', sans-serif;
+    font-weight: 700;
+}
+
+.moshe-emphasis-red {
+    color: var(--moshe-red-box-text);
+    font-family: 'Fredoka-SemiBold', sans-serif;
+    font-weight: 700;
+}
+
+.moshe-video-box {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+.moshe-video-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 40%;
+    overflow: hidden;
+    border-radius: 24px;
+    background-color: var(--moshe-blue-box-bg);
+    box-sizing: border-box;
+    border: 1px solid var(--moshe-blue-box-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--moshe-blue-box-text);
+    font-size: 14px;
+}
+
+.demo-capsule-wrap {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    padding: 12px 40px;
+    box-sizing: border-box;
+    background: var(--moshe-header-grad);
+}
+.demo-capsule-wrap h1 {
+    font-family: 'Fredoka-SemiBold', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    margin: 0;
+    color: var(--moshe-ink);
+}
+
+.demo-frame {
+    border: 1px solid var(--moshe-header-border);
+    border-radius: 30px;
+    padding: 24px;
+}
+
+.demo-frame-inner-note {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    margin-top: 12px;
+}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">מקרא עיצוב — תוכן יחידות (קמפוס)</h1>
+<p class="page-subtitle">כל class מוצג כאן עם דוגמה חיה מעוצבת. כלל אצבע: אין style="" inline ביחידה חדשה — רק class מהרשימה הזו.</p>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">כותרת ראשית (הקפסולה)</span>
+    <span class="entry-status status-auto">אוטומטי מהפלטפורמה</span>
+  </div>
+  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">לא בונים ידנית — h1.mb-0.h3 מיוצר ע"י Open edX (סעיף 4). מוצג כאן רק להמחשה חזותית.</p>
+  <div class="demo-box demo-capsule-wrap">
+    <h1>כותרת היחידה כאן</h1>
+  </div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">מסגרת עוטפת חיצונית</span>
+    <span class="entry-status status-auto">אוטומטי מהפלטפורמה</span>
+  </div>
+  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">לא בונים ידנית — .course-wrapper main#main ברמת היחידה (סעיף 12).</p>
+  <div class="demo-box demo-frame">
+    <p class="demo-frame-inner-note">התוכן של היחידה (כותרת משנה, פסקאות, תיבות) יושב כאן בפנים אוטומטית.</p>
+  </div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">כותרת משנה בתוך התוכן</span>
+    <span class="entry-class">.moshe-unit-title</span>
+    <span class="entry-status status-exists">קיים</span>
+  </div>
+  <div class="demo-box">
+    <h2 class="moshe-unit-title">מהסלע במדבר אל עידן המחר</h2>
+  </div>
+  <div class="code-block">&lt;h2 class="moshe-unit-title"&gt;כותרת המשנה&lt;/h2&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">פסקת טקסט רגילה</span>
+    <span class="entry-class">.moshe-body-text</span>
+    <span class="entry-status status-exists">קיים</span>
+  </div>
+  <div class="demo-box">
+    <p class="moshe-body-text">ביחידה זו נחקור את נקודת המפנה הטראגית של משה ונשליך את תכונותיו הייחודיות אל עבר אתגרי העתיד — טקסט לדוגמה בלבד, יישור לשני הצדדים וצבע אחיד.</p>
+  </div>
+  <div class="code-block">&lt;p class="moshe-body-text"&gt;טקסט הפסקה...&lt;/p&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">תיבת ציטוט/פסוק (רקע תכלת)</span>
+    <span class="entry-class">.moshe-verse-box</span>
+    <span class="entry-status status-exists">קיים</span>
+  </div>
+  <div class="demo-box moshe-verse-box">
+    <span class="quote">"כִּי אָדָם אֵין צַדִּיק בָּאָרֶץ אֲשֶׁר יַעֲשֶׂה טּוֹב וְלֹא יֶחֱטָא"</span>
+    <span class="source">(קהלת ז', כ')</span>
+  </div>
+  <div class="code-block">&lt;div class="moshe-verse-box"&gt;
+  &lt;span class="quote"&gt;"הטקסט המצוטט..."&lt;/span&gt;
+  &lt;span class="source"&gt;(המקור)&lt;/span&gt;
+&lt;/div&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">תיבת פרשנות / רמב"ם (רקע קורל)</span>
+    <span class="entry-class">.moshe-commentary-box</span>
+    <span class="entry-status status-exists">קיים</span>
+  </div>
+  <div class="demo-box moshe-commentary-box">
+    <p>"וכאשר ראוהו שכעס, אמרו שהוא עליו השלום אינו מי שיש לו פחיתות מידה... אלא אמר: <strong class="moshe-emphasis-red">'קח את המטה וכו״'</strong>"</p>
+    <span class="source">(פירוש המשנה לרמב"ם, מסכת אבות)</span>
+  </div>
+  <div class="code-block">&lt;div class="moshe-commentary-box"&gt;
+  &lt;p&gt;"הטקסט..." &lt;strong class="moshe-emphasis-red"&gt;משפט מודגש&lt;/strong&gt;&lt;/p&gt;
+  &lt;span class="source"&gt;(המקור)&lt;/span&gt;
+&lt;/div&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">הדגשת מילה — כחול/טורקיז</span>
+    <span class="entry-class">.moshe-emphasis</span>
+    <span class="entry-status status-exists">קיים</span>
+  </div>
+  <div class="demo-box">
+    <p class="moshe-body-text">משה ואהרן אמרו <strong class="moshe-emphasis">"הֲמִן־הַסֶּלַע הַזֶּה נוֹצִיא לָכֶם מָיִם"</strong> ולא "יוציא".</p>
+  </div>
+  <div class="code-block">&lt;strong class="moshe-emphasis"&gt;מילה מודגשת&lt;/strong&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">הדגשת מילה — אדום</span>
+    <span class="entry-class">.moshe-emphasis-red</span>
+    <span class="entry-status status-new">נוסף היום</span>
+  </div>
+  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">בשימוש רק בתוך תיבת רמב"ם/פרשנות אדומה — ראו דוגמה למעלה.</p>
+  <div class="code-block">&lt;strong class="moshe-emphasis-red"&gt;מילה מודגשת&lt;/strong&gt;</div>
+</div>
+
+<div class="entry">
+  <div class="entry-label">
+    <span class="entry-name">תיבת וידאו (16:9 responsive)</span>
+    <span class="entry-class">.moshe-video-box</span>
+    <span class="entry-status status-new">נוסף היום</span>
+  </div>
+  <div class="demo-box moshe-video-box">
+    <div class="moshe-video-frame">[ iframe יוטיוב נכנס כאן ]</div>
+  </div>
+  <div class="code-block">&lt;div class="moshe-video-box"&gt;
+  &lt;div class="moshe-video-frame"&gt;
+    &lt;iframe title="נגן וידאו" src="https://www.youtube.com/embed/XXXXX"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen="allowfullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+</div>
+
+<p style="font-size:13px;color:#9ca3af;margin-top:40px;">קובץ זה הוא מקרא ויזואלי בלבד (לצפייה בדפדפן) — הצבעים/פונטים מועתקים מתוך custom-style.css, לא מחוברים אליו. אם משנים class ב-CSS הראשי, יש לעדכן גם כאן ידנית כדי שהמקרא יישאר מדויק.</p>
+
+</body>
+</html>
