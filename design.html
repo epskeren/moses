@@ -232,6 +232,52 @@ button {
 .pv-article-card h5 { font-size:14px; font-weight:700; color:#254768; margin:0 0 4px; }
 .pv-article-card p { font-size:12px; color:#000a11; margin:0 0 8px; }
 .pv-article-card .btn { display:inline-block; border:2px solid #da4d39; color:#da4d39; border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; }
+
+/* ===== טאב מקרא ===== */
+.ref-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 18px;
+    background: #fff;
+}
+
+@media (max-width: 800px) {
+    .ref-card { grid-template-columns: 1fr; }
+}
+
+.ref-card-title {
+    grid-column: 1 / -1;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    background: #f3f4f6;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    width: fit-content;
+}
+
+.ref-code {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    direction: ltr;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    margin: 0;
+}
 </style>
 </head>
 <body>
@@ -242,6 +288,7 @@ button {
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('convert')">המרה מ-HTML קיים</button>
   <button class="tab-btn" onclick="switchTab('create')">יצירת רכיב חדש</button>
+  <button class="tab-btn" onclick="switchTab('reference')">מקרא — כל האפשרויות</button>
 </div>
 
 <div id="tab-convert" class="tab-content active">
@@ -291,6 +338,7 @@ button {
         <option value="questions-box">שאלות לחקירה עצמית</option>
         <option value="video-box">תיבת וידאו (16:9)</option>
         <option value="article-card">כרטיס מאמר להורדה</option>
+        <option value="emphasis">הדגשת מילה/ביטוי (טורקיז)</option>
       </select>
     </div>
 
@@ -333,6 +381,9 @@ button {
           <p>תיאור קצר של המאמר...</p>
           <span class="btn">פתחו מאמר לקריאה</span>
         </div>
+      </div>
+      <div id="preview-emphasis" class="preview-item">
+        <p class="pv-body">משפט רגיל עם <span style="color:#569eb8;font-weight:700;">מילה או ביטוי מודגש</span> בתוכו.</p>
       </div>
     </div>
 
@@ -421,6 +472,14 @@ button {
       </div>
     </div>
 
+    <div id="fields-emphasis" class="component-fields">
+      <div class="field-group">
+        <label>המילה/הביטוי המודגש בלבד</label>
+        <input type="text" id="em-text" placeholder='כִּי טוֹב הוּא'>
+        <div class="field-hint">מדביקים את זה בתוך פסקה רגילה — לא רכיב עצמאי בפני עצמו</div>
+      </div>
+    </div>
+
     <div class="controls">
       <button class="btn-primary" onclick="generateComponent()">צור קוד →</button>
     </div>
@@ -434,6 +493,16 @@ button {
     </div>
   </div>
 </div>
+
+</div>
+
+<div id="tab-reference" class="tab-content">
+
+<div class="warning">
+מקרא לנטלי (או כל מי שמטמיע תוכן) — כל רכיב עם דוגמה ויזואלית והקוד המדויק שלו. אין style="" inline בשום מקום — רק class-ים.
+</div>
+
+<div id="ref-cards"></div>
 
 </div>
 
@@ -518,6 +587,11 @@ function generateComponent() {
         html = `<div class="moshe-article-card">\n  <img class="moshe-article-card-icon" src="${ASSET_BASE}Moshe-Symbol.png" alt="סמל הקורס">\n  <h4 class="moshe-article-card-title">${escapeHtml(title)}</h4>\n  <p class="moshe-article-card-text">\n    ${escapeHtml(desc)}</p>\n  <a class="moshe-article-card-button" href="${pdfUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(btnText)}</a>\n</div>`;
     }
 
+    else if (type === 'emphasis') {
+        const text = document.getElementById('em-text').value.trim();
+        html = `<strong class="moshe-emphasis">${escapeHtml(text)}</strong>`;
+    }
+
     document.getElementById('create-output').value = html;
 }
 
@@ -526,6 +600,67 @@ function copyCreateOutput() {
     out.select();
     document.execCommand('copy');
 }
+
+const REFERENCE_ITEMS = [
+    {
+        name: 'פסקת טקסט רגילה',
+        preview: '<p class="pv-body">טקסט רגיל בגוף היחידה, יישור לשני הצדדים.</p>',
+        code: '<p class="moshe-body-text">\n  טקסט הפסקה כאן...</p>'
+    },
+    {
+        name: 'כותרת ראשית (h2)',
+        preview: '<div class="pv-title">כותרת ראשית לדוגמה</div>',
+        code: '<h2 class="moshe-unit-title">כותרת המשנה בתוך התוכן</h2>'
+    },
+    {
+        name: 'כותרת-משנה / "כלי #N" (h3)',
+        preview: '<div class="pv-subtitle">כלי #1: כותרת-משנה לדוגמה</div>',
+        code: '<h3 class="moshe-subtitle">כלי #1: אינטרטקסטואליות</h3>'
+    },
+    {
+        name: 'תיבת ציטוט/פסוק (רקע תכלת)',
+        preview: '<div class="pv-verse-box"><span class="q">"טקסט הפסוק המצוטט..."</span><span class="s">(המקור)</span></div>',
+        code: '<div class="moshe-verse-box">\n  <span class="quote">\n    "טקסט הפסוק..."</span>\n  <span class="source">\n    (המקור)</span>\n</div>'
+    },
+    {
+        name: 'תיבת פרשנות/רמב"ם (רקע קורל)',
+        preview: '<div class="pv-commentary-box"><p>"טקסט הפרשנות המודגש..."</p><span class="s">(המקור)</span></div>',
+        code: '<div class="moshe-commentary-box">\n  <p>"טקסט הפרשנות..."</p>\n  <span class="source">(המקור)</span>\n</div>'
+    },
+    {
+        name: 'שאלות לחקירה עצמית',
+        preview: '<div class="pv-questions"><h4>שאלות לחקירה עצמית:</h4><ul><li>שאלה ראשונה?</li><li>שאלה שנייה?</li></ul></div>',
+        code: '<div class="moshe-questions-box">\n  <h2 class="moshe-questions-title">שאלות לחקירה עצמית:</h2>\n  <ul class="moshe-questions-list">\n    <li>שאלה ראשונה?</li>\n    <li>שאלה שנייה?</li>\n  </ul>\n</div>'
+    },
+    {
+        name: 'תיבת וידאו (16:9)',
+        preview: '<div class="pv-video">🎥 מסגרת וידאו 16:9</div>',
+        code: '<div class="moshe-video-box">\n  <div class="moshe-video-frame">\n    <iframe title="נגן וידאו" src="https://www.youtube.com/embed/XXXXX"\n      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"\n      allowfullscreen="allowfullscreen"\n      referrerpolicy="strict-origin-when-cross-origin"></iframe>\n  </div>\n</div>'
+    },
+    {
+        name: 'כרטיס מאמר להורדה',
+        preview: '<div class="pv-article-card"><img><h5>מאמר: שם המאמר</h5><p>תיאור קצר של המאמר...</p><span class="btn">פתחו מאמר לקריאה</span></div>',
+        code: '<div class="moshe-article-card">\n  <img class="moshe-article-card-icon" src="https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Moshe-Symbol.png" alt="סמל הקורס">\n  <h4 class="moshe-article-card-title">מאמר: שם המאמר</h4>\n  <p class="moshe-article-card-text">\n    תיאור קצר...</p>\n  <a class="moshe-article-card-button" href="https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@קובץ.pdf" target="_blank" rel="noopener noreferrer">פתחו מאמר לקריאה</a>\n</div>'
+    },
+    {
+        name: 'הדגשת מילה/ביטוי (טורקיז)',
+        preview: '<p class="pv-body">משפט רגיל עם <span style="color:#569eb8;font-weight:700;">מילה או ביטוי מודגש</span> בתוכו.</p>',
+        code: '<strong class="moshe-emphasis">המילה או הביטוי המודגש</strong>'
+    }
+];
+
+function buildReferenceTab() {
+    const container = document.getElementById('ref-cards');
+    container.innerHTML = REFERENCE_ITEMS.map((item, i) => `
+        <div class="ref-card">
+            <div class="ref-card-title">${item.name}</div>
+            <div>${item.preview}</div>
+            <pre class="ref-code">${escapeHtml(item.code)}</pre>
+        </div>
+    `).join('');
+}
+
+buildReferenceTab();
 
 function filterStyle(styleStr, removeProps) {
     if (!styleStr) return '';
