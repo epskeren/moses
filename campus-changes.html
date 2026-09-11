@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מפת שינויים — custom-style.css קורס משה</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    margin: 0;
+    background: #fafbfc;
+    color: #1f2937;
+}
+
+.topbar {
+    background: #254768;
+    color: #fff;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.topbar .sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: #cfe0ee;
+    margin-top: 2px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    height: calc(100vh - 62px);
+}
+
+.list-pane {
+    overflow-y: auto;
+    padding: 16px;
+    border-left: 1px solid #e5e7eb;
+    background: #fff;
+}
+
+.category {
+    margin-bottom: 18px;
+}
+
+.category-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #254768;
+    background: #e8f1fa;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.item {
+    display: block;
+    width: 100%;
+    text-align: right;
+    background: none;
+    border: none;
+    border-right: 3px solid transparent;
+    padding: 7px 10px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.item:hover {
+    background: #f3f4f6;
+    border-right-color: #569eb8;
+}
+
+.item.done::before {
+    content: "✓ ";
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.item.cant::before {
+    content: "✗ ";
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.css-pane {
+    overflow-y: auto;
+    background: #1e293b;
+    padding: 20px;
+}
+
+.css-sec {
+    color: #e2e8f0;
+    font-family: monospace;
+    font-size: 12.5px;
+    direction: ltr;
+    text-align: left;
+    white-space: pre-wrap;
+    margin-bottom: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.css-sec.highlight {
+    background: #334155;
+    box-shadow: 0 0 0 2px #569eb8;
+}
+
+.legend {
+    padding: 10px 16px;
+    background: #fef9c3;
+    font-size: 12px;
+    color: #854d0e;
+    border-bottom: 1px solid #fde68a;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  מפת שינויים — custom-style.css (קורס משה)
+  <div class="sub">לחיצה על פריט מימין גוללת ומדגישה את המקום המתאים בקוד משמאל</div>
+</div>
+
+<div class="legend">✓ = בוצע ופעיל &nbsp;&nbsp; ✗ = לא ניתן לשינוי (מגבלת פלטפורמה, לא CSS)</div>
+
+<div class="layout">
+  <div class="list-pane">
+<div class="category">
+  <div class="category-title">🖼️ באנר עליון</div>
+  <button class="item done" data-target="sec-19">הוספת תמונת הבאנר מעל הניווט הכללי</button>
+  <button class="item done" data-target="sec-18">גופן + עיצוב hover/קו טורקיז לתפריט שעל הבאנר (קורס/התקדמות/דיון)</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🧭 נתיב ניווט (Breadcrumbs)</div>
+  <button class="item done" data-target="sec-9">צבע וגופן לנתיב "משה / לידתו של מנהיג / ..."</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🏷️ לוגו הקורס</div>
+  <button class="item done" data-target="sec-12">הוספת הלוגו בסרגל הצדדי</button>
+</div>
+
+<div class="category">
+  <div class="category-title">💊 כותרת היחידה (הקפסולה)</div>
+  <button class="item done" data-target="sec-3">כותרת ראשית בגרדיאנט תכלת, פינות מעוגלות</button>
+</div>
+
+<div class="category">
+  <div class="category-title">⬅️➡️ ניווט עליון (בין דפי היחידה)</div>
+  <button class="item done" data-target="sec-4">כפתורי "הבא"/"הקודם" — צבע וצורת פילה</button>
+  <button class="item done" data-target="sec-15">עיצוב טאב הוידאו האמצעי (מסגרת+hover)</button>
+  <button class="item done" data-target="sec-14">הסרת רקע/מסגרת מיותרים סביב כל הבר</button>
+  <button class="item done" data-target="sec-14">הסרת קו לא-רצוי מתחת לטאב הפעיל</button>
+  <button class="item done" data-target="sec-14">הסרת קווים אנכיים אפורים סביב אזור התוכן</button>
+</div>
+
+<div class="category">
+  <div class="category-title">📚 ניווט צדדי (סרגל "תוכן הקורס")</div>
+  <button class="item done" data-target="sec-5">כותרת פרק — רקע, פינות מעוגלות</button>
+  <button class="item done" data-target="sec-5">שורת יחידה — מסגרת מלאה + hover</button>
+  <button class="item done" data-target="sec-5">אייקוני ✓ בטורקיז במקום אפור</button>
+  <button class="item done" data-target="sec-5">צביעת היחידה הפעילה כרגע</button>
+  <button class="item done" data-target="sec-5">הסרת מסגרת חיצונית + קו אפור מיותרים</button>
+  <button class="item done" data-target="sec-5">כפתור "תצוגה מלאה" — עיצוב פילה</button>
+  <button class="item done" data-target="sec-11">גופן אחיד בכל הסרגל</button>
+  <button class="item cant" data-target="sec-5">הפס הכחול הכהה בצד היחידה הפעילה — לא ניתן לשינוי</button>
+</div>
+
+<div class="category">
+  <div class="category-title">⬇️ ניווט תחתון</div>
+  <button class="item done" data-target="sec-4">גודל אחיד + מירכוז שני הכפתורים</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🖼️ המסגרת התוחמת (הקו התוחם סביב היחידה)</div>
+  <button class="item done" data-target="sec-13">מסגרת אחת שעוטפת את כל תוכן היחידה (טקסט+וידאו)</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🎥 וידאו</div>
+  <button class="item done" data-target="sec-6">מסגרת תכלת מעוגלת סביב הנגן</button>
+  <button class="item done" data-target="sec-6">הסתרת כותרת אוטומטית של הפלטפורמה</button>
+  <button class="item done" data-target="sec-6">צבע לבן לבקרות הנגן (על רקע כהה)</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🧱 מערכת התוכן ביחידות (class-ים)</div>
+  <button class="item done" data-target="sec-10">עטיפת יחידה, כותרות (h2/h3), פסקת גוף</button>
+  <button class="item done" data-target="sec-10">תיבת ציטוט/פסוק (רקע תכלת)</button>
+  <button class="item done" data-target="sec-10">תיבת פרשנות/רמב"ם (רקע קורל)</button>
+  <button class="item done" data-target="sec-10">הדגשות טורקיז ואדום בתוך משפט</button>
+  <button class="item done" data-target="sec-10">תיבת וידאו responsive</button>
+  <button class="item done" data-target="sec-10">כרטיס "מאמר להורדה"</button>
+  <button class="item done" data-target="sec-10">מבנה קונצנטרי (שורות מודרגות)</button>
+  <button class="item done" data-target="sec-10">שאלות לחקירה עצמית (בלי מסגרת)</button>
+  <button class="item done" data-target="sec-10">אקורדיון מונחים (5 קטגוריות צבע)</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🧹 הסרות וניקויים</div>
+  <button class="item done" data-target="sec-7">הסתרת כפתור "סימון דף זה"</button>
+  <button class="item done" data-target="sec-17">הסרת קו מפריד בין רכיבים בתוך יחידה</button>
+  <button class="item done" data-target="sec-2">תיקון הודעת אזהרה ב-Studio (גופן+צבע)</button>
+</div>
+
+<div class="category">
+  <div class="category-title">🎨 גופן ופלטה גלובלית</div>
+  <button class="item done" data-target="sec-0">טעינת גופן Fredoka (כל המשקלים)</button>
+  <button class="item done" data-target="sec-1">פלטת הצבעים המלאה (משתנים)</button>
+  <button class="item done" data-target="sec-2">החלת הגופן על כל כותרות/פסקאות בקורס</button>
+</div>
+
+<div class="category">
+  <div class="category-title">⚠️ לא ניתן לשינוי (התנהגות פלטפורמה, לא CSS)</div>
+  <button class="item cant" data-target="sec-header">סגירת פאנל "תוכן הקורס" בלחיצה על יחידה</button>
+  <button class="item cant" data-target="sec-header">תוכן חסום ל"שומע חופשי" (breadcrumb ריק)</button>
+</div>
+  </div>
+  <div class="css-pane" id="css-pane">
+<div class="css-sec" id="sec-header">/* ============================================================
+   custom-style.css — קורס &quot;משה&quot; | בר-אילן | קמפוס (Open edX)
+   נטען דרך &lt;link&gt; ברכיב Raw HTML נפרד, בתוך ה-iframe של התוכן
+   (courses.campus.gov.il).
+
+   מבנה DOM מאומת:
+   - #courseHome-outline / #course-outline-sidebar — סרגל צד
+   - nav#courseware-sequenceNavigation.sequence-navigation — ניווט הבא/הקודם
+   - .course-wrapper main#main — מסגרת תוחמת ברמת היחידה (קיים רק בהקשר זה —
+     לא ב-h1/breadcrumb/כפתורים, שם אין להשתמש ב-scope הזה)
+   - #courseTabsNavigation — ניווט עליון (קורס/התקדמות/דיון) + באנר
+
+   חובה בכל עדכון: לעדכן ?v=N בתגית ה-&lt;link&gt; (cache-busting).
+   כלל יסוד לתוכן יחידות: אין style=&quot;&quot; inline — רק class-ים. מקרא מלא
+   ב-&quot;מקרא-עיצוב-חי.html&quot;.
+   ============================================================ */
+
+
+</div>
+<div class="css-sec" id="sec-0">/* ---------- 1. פונט Fredoka ---------- */
+@font-face {
+    font-family: &#x27;Fredoka&#x27;;
+    src: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Light.ttf&quot;);
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: &#x27;Fredoka&#x27;;
+    src: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Regular.ttf&quot;);
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: &#x27;Fredoka&#x27;;
+    src: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Medium.ttf&quot;);
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: &#x27;Fredoka-SemiBold&#x27;;
+    src: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-SemiBold.ttf&quot;);
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: &#x27;Fredoka-bold&#x27;;
+    src: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@Fredoka-Bold.ttf&quot;);
+    font-weight: 700;
+    font-style: normal;
+}
+
+</div>
+<div class="css-sec" id="sec-1">/* ---------- 2. משתני עיצוב ---------- */
+:root {
+    --moshe-ink: #000a11;
+    --moshe-blue-box-bg: #e8f1fa;
+    --moshe-blue-box-border: #d6e4f6;
+    --moshe-blue-box-text: #254768;
+    --moshe-red-box-bg: #ffeeeb;
+    --moshe-red-box-border: #f6dcd9;
+    --moshe-red-box-text: #b72f1a;
+    --moshe-turquoise: #569eb8;
+    --moshe-header-grad: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
+    --moshe-header-border: #cedfef;
+    --moshe-cta-bg: #254768;
+    --moshe-cta-text: #ffffff;
+    --acc-1-border: #a7c3e4;
+    --acc-1-bg: #f0f4f9;
+    --acc-2-border: #92cddc;
+    --acc-2-bg: #eaf6f9;
+    --acc-3-border: #9cd9c7;
+    --acc-3-bg: #edf8f4;
+    --acc-4-border: #f4a79d;
+    --acc-4-bg: #fdeeea;
+    --acc-5-border: #e5867a;
+    --acc-5-bg: #fae7e4;
+}
+
+</div>
+<div class="css-sec" id="sec-2">/* ---------- 3. פונט גלובלי ----------
+   בלי scope ל-.course-wrapper — הוא לא קיים בהקשר של h1-h6/p/label
+   (שברנו את קפסולת הכותרת וה-breadcrumb כששמנו scope בעבר). מוגבל
+   לתגיות טקסט בלבד — לא button/span/a/input — כדי לא לשבור
+   אייקוני-גופן בבקרות הוידאו. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label {
+    font-family: &#x27;Fredoka&#x27;, &#x27;FedraSansBarilan-Book&#x27;, -apple-system, BlinkMacSystemFont,
+        &#x27;Segoe UI&#x27;, Roboto, &#x27;Helvetica Neue&#x27;, Arial, sans-serif !important;
+    color: var(--moshe-ink);
+    text-align: right;
+}
+
+/* תיקון ממוקד: p.warning בתוך div.message.has-warnings (הודעת Studio)
+   קיבל בטעות את הגופן/צבע מהכלל הגלובלי למעלה. מוחזר לגופן הטבעי,
+   וצבע לבן (רקע ההודעה כהה). */
+.message.has-warnings,
+.message.has-warnings p.warning {
+    font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Arial, sans-serif !important;
+    color: #ffffff !important;
+    text-align: initial !important;
+}
+
+</div>
+<div class="css-sec" id="sec-3">/* ---------- 4. כותרת עליונה של יחידה (h1) ---------- */
+h1.mb-0.h3 {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 60px;
+    border-radius: 9999px;
+    padding: 12px 40px;
+    margin: 13px 0 20px 0;
+    background: var(--moshe-header-grad);
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--moshe-ink) !important;
+    text-transform: none;
+}
+
+</div>
+<div class="css-sec" id="sec-4">/* ---------- 5. כפתורי הבא/הקודם (ניווט תחתון + עליון) ---------- */
+@media (min-width: 576px) {
+
+    [dir=rtl] .sequence-navigation .next-btn,
+    [dir=rtl] .sequence-navigation .previous-btn {
+        color: var(--moshe-cta-text) !important;
+        background-color: var(--moshe-cta-bg) !important;
+        background-image: none;
+        border-radius: 9999px !important;
+        font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+        font-size: 16px;
+        text-decoration: none;
+    }
+}
+
+.previous-button,
+.next-button {
+    color: var(--moshe-cta-text) !important;
+    background-color: var(--moshe-cta-bg) !important;
+    background-image: none !important;
+    border-radius: 9999px !important;
+    border: none !important;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.previous-button:hover,
+.next-button:hover {
+    opacity: 0.9;
+    transform: scale(0.98);
+    transition: all 0.15s ease;
+}
+
+/* גודל אחיד + מירכוז לניווט התחתון (פתרון שאול מקורס הרב זקס) */
+.unit-navigation {
+    justify-content: center !important;
+    gap: 16px;
+}
+
+.unit-navigation .previous-button,
+.unit-navigation .next-button {
+    flex: 0 1 28% !important;
+    justify-content: center;
+}
+
+.sequence-navigation .btn.active {
+    border-bottom: 3px solid var(--moshe-turquoise) !important;
+}
+
+</div>
+<div class="css-sec" id="sec-5">/* ---------- 6. סרגל ניווט צד (פאנל &quot;תוכן הקורס&quot;) ----------
+   סלקטורים מאומתים: #courseHome-outline &gt; li &gt; .pgn_collapsible &gt;
+   .collapsible-trigger (כותרת פרק); ol.list-unstyled &gt; li (שורת
+   יחידה — כולל היחידה הפעילה שאין לה class כלל, רק style inline). */
+#courseHome-outline .pgn_collapsible {
+    border: none !important;
+    margin-bottom: 8px;
+}
+
+#courseHome-outline .collapsible-trigger {
+    background-color: var(--moshe-blue-box-bg) !important;
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    font-weight: 700 !important;
+    color: var(--moshe-blue-box-text) !important;
+}
+
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li {
+    font-family: &#x27;Fredoka&#x27;, sans-serif !important;
+    transition: background-color 0.15s ease;
+    border: 1px solid var(--moshe-header-border) !important;
+    border-radius: 12px !important;
+    margin: 4px 0 !important;
+}
+
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li:hover {
+    background-color: var(--moshe-blue-box-bg) !important;
+}
+
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li .text-break,
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li a {
+    color: var(--moshe-ink) !important;
+    font-family: &#x27;Fredoka&#x27;, sans-serif !important;
+    text-decoration: none !important;
+}
+
+/* אייקוני הוי (checkmark) — טורקיז במקום אפור ברירת מחדל */
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li svg,
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li .fa,
+#courseHome-outline .collapsible-body ol.list-unstyled&gt;li [class*=&quot;icon&quot;] {
+    color: var(--moshe-turquoise) !important;
+}
+
+/* היחידה הפעילה: style=&quot;&quot; inline של הפלטפורמה. background-color
+   ניתן לשינוי (בלי !important שם); border-inline-start עם !important
+   inline — לא ניתן לשינוי משום CSS חיצוני בשום מקרה. */
+#courseHome-outline li[style*=&quot;background-color&quot;] {
+    background-color: var(--moshe-blue-box-bg) !important;
+}
+
+/* מסגרת חיצונית של כל הסרגל — הוסרה לפי בקשה */
+#course-outline-sidebar.border.border-light-400.rounded-sm {
+    border: none !important;
+}
+
+/* קו אפור מעל כפתור &quot;תצוגה מלאה&quot; */
+#course-outline-sidebar .bg-gray-100.border-top.border-bottom {
+    display: none !important;
+}
+
+/* כפתור &quot;תצוגה מלאה&quot; — .btn-outline-primary הוא class גנרי של
+   הפלטפורמה, מוקף (scope) ל-#course-outline-sidebar */
+#course-outline-sidebar .btn.btn-outline-primary {
+    border: 1.5px solid var(--moshe-blue-box-text) !important;
+    color: var(--moshe-blue-box-text) !important;
+    background-color: #ffffff !important;
+    border-radius: 9999px !important;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    font-weight: 700 !important;
+    transition: all 0.15s ease;
+}
+
+#course-outline-sidebar .btn.btn-outline-primary:hover,
+#course-outline-sidebar .btn.btn-outline-primary:focus {
+    background-color: var(--moshe-blue-box-text) !important;
+    color: #ffffff !important;
+    border-color: var(--moshe-blue-box-text) !important;
+}
+
+</div>
+<div class="css-sec" id="sec-6">/* ---------- 7. וידאו ---------- */
+.xmodule_display.xmodule_VideoBlock .video {
+    background-color: var(--moshe-blue-box-bg) !important;
+    border: 1px solid var(--moshe-blue-box-border) !important;
+    border-radius: 24px;
+    padding: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.xmodule_display.xmodule_VideoBlock .video .video-wrapper,
+.xmodule_display.xmodule_VideoBlock .video .tc-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.xblock-student_view-video h3 {
+    display: none;
+}
+
+/* בקרות הנגן על רקע כהה — צבע לבן מפורש (color:initial מאפס לשחור,
+   לא לברירת המחדל של הפלטפורמה — לא להשתמש בו) */
+.xmodule_display.xmodule_VideoBlock .video-controls,
+.xmodule_display.xmodule_VideoBlock .video-controls *,
+.xmodule_display.xmodule_VideoBlock .vcr,
+.xmodule_display.xmodule_VideoBlock .vcr *,
+.xmodule_display.xmodule_VideoBlock .vidtime,
+.xmodule_display.xmodule_VideoBlock .secondary-controls,
+.xmodule_display.xmodule_VideoBlock .secondary-controls * {
+    color: #ffffff !important;
+}
+
+</div>
+<div class="css-sec" id="sec-7">/* ---------- 7א. הסרת כפתור &quot;סימון דף זה&quot; ----------
+   סלקטור מבני (adjacent sibling) — לא class גנרי — שאול מקורס הרב זקס */
+.unit&gt;h2.sr-only+button {
+    display: none !important;
+}
+
+</div>
+<div class="css-sec" id="sec-8">/* ---------- 8. טאבים (Course / Discussion / ...) ---------- */
+.wrapper-course-material .course-material .course-tabs .tab a:hover,
+.wrapper-course-material .course-material .course-tabs .tab a:focus,
+.wrapper-course-material .course-material .course-tabs .tab a.active {
+    border-bottom-color: var(--moshe-turquoise) !important;
+    color: var(--moshe-ink) !important;
+    font-weight: 700 !important;
+}
+
+</div>
+<div class="css-sec" id="sec-9">/* ---------- 9. Breadcrumbs ----------
+   בלי scope — ה-breadcrumb יושב תחת &lt;main id=&quot;main-content&quot;&gt;, הקשר
+   שונה מ-.course-wrapper. */
+nav[aria-label=&quot;breadcrumb&quot;] a {
+    color: var(--moshe-blue-box-text) !important;
+    font-family: &#x27;Fredoka&#x27;, &#x27;FedraSansBarilan-Book&#x27;, -apple-system, BlinkMacSystemFont,
+        &#x27;Segoe UI&#x27;, Roboto, &#x27;Helvetica Neue&#x27;, Arial, sans-serif !important;
+}
+
+</div>
+<div class="css-sec" id="sec-10">/* ---------- 10. תבנית תוכן ליחידה — class-ים בלבד, אין style=&quot;&quot; inline ---------- */
+.moshe-unit-wrapper {
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.moshe-unit-title {
+    display: block;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, &#x27;Fredoka-bold&#x27;, sans-serif !important;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    font-size: 24px;
+    color: #000a11 !important;
+}
+
+/* כותרת-משנה (h3) — לתגי-משנה כמו &quot;כלי 1: ...&quot; */
+.moshe-subtitle {
+    display: block;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, &#x27;Fredoka-bold&#x27;, sans-serif !important;
+    font-weight: 700 !important;
+    margin: 24px 0 12px 0;
+    font-size: 16px !important;
+    color: #000a11 !important;
+}
+
+.moshe-body-text {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #000a11 !important;
+    text-align: justify !important;
+}
+
+.moshe-verse-box {
+    background-color: var(--moshe-blue-box-bg);
+    border: 1px solid var(--moshe-blue-box-border);
+    border-radius: 24px;
+    padding: 32px 40px;
+    margin: 32px 0;
+}
+
+.moshe-verse-box .quote {
+    display: block;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif;
+    font-weight: 700;
+    color: var(--moshe-blue-box-text);
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.moshe-verse-box .source {
+    display: block;
+    color: var(--moshe-blue-box-text);
+    font-family: &#x27;Fredoka&#x27;, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.moshe-commentary-box {
+    background-color: var(--moshe-red-box-bg);
+    border: 1px solid var(--moshe-red-box-border);
+    border-radius: 24px;
+    padding: 32px 40px;
+    margin: 24px 0;
+}
+
+.moshe-commentary-box p {
+    color: var(--moshe-red-box-text);
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.moshe-commentary-box .source {
+    display: block;
+    margin-top: 12px;
+    color: var(--moshe-red-box-text);
+    font-family: &#x27;Fredoka&#x27;, sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.moshe-emphasis {
+    color: var(--moshe-turquoise);
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif;
+    font-weight: 700;
+}
+
+.moshe-emphasis-red {
+    color: var(--moshe-red-box-text);
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif;
+    font-weight: 700;
+}
+
+/* תיבת וידאו (16:9 responsive) */
+.moshe-video-box {
+    display: block;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    margin: 0 0 48px 0;
+}
+
+.moshe-video-box .moshe-video-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+    border-radius: 24px;
+    background-color: var(--moshe-blue-box-bg);
+    box-sizing: border-box;
+    border: 1px solid var(--moshe-blue-box-border);
+}
+
+.moshe-video-box .moshe-video-frame iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* כרטיס &quot;מאמר להורדה/קריאה&quot; */
+.moshe-article-card {
+    background-color: var(--moshe-blue-box-bg);
+    border: 1px solid var(--moshe-blue-box-border);
+    border-radius: 24px;
+    padding: 32px 40px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.moshe-article-card-icon {
+    height: 60px !important;
+    width: auto !important;
+    max-width: 200px !important;
+    margin-bottom: 24px;
+}
+
+.moshe-article-card-title {
+    margin: 0 0 12px 0;
+    font-family: &#x27;Fredoka-bold&#x27;, sans-serif;
+    font-weight: 700;
+    color: var(--moshe-blue-box-text) !important;
+    font-size: 24px;
+    text-align: center;
+}
+
+.moshe-article-card-text {
+    margin: 0 0 24px 0;
+    font-family: &#x27;Fredoka&#x27;, sans-serif;
+    font-weight: 400;
+    color: var(--moshe-ink) !important;
+    font-size: 16px;
+    text-align: center;
+}
+
+.moshe-article-card-button {
+    display: inline-block;
+    background-color: transparent !important;
+    color: #da4d39 !important;
+    border: 2px solid #da4d39 !important;
+    text-decoration: none !important;
+    font-family: &#x27;Fredoka-bold&#x27;, &#x27;Fredoka-SemiBold&#x27;, &#x27;Fredoka&#x27;, sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 16px;
+    padding: 10px 32px;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+}
+
+.moshe-article-card-button:hover,
+.moshe-article-card-button:focus,
+.moshe-article-card-button:visited {
+    color: #da4d39 !important;
+    opacity: 0.85;
+}
+
+/* בלוק &quot;מבנה קונצנטרי&quot; — שורות div מודרגות */
+.moshe-concentric-block {
+    font-family: &#x27;Fredoka&#x27;, &#x27;Fredoka-Regular&#x27;, sans-serif !important;
+    font-size: 15px;
+    color: #000a11;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding: 0 16px;
+}
+
+.moshe-concentric-block strong {
+    font-family: &#x27;Fredoka-bold&#x27;, &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    font-weight: 700;
+}
+
+/* &quot;שאלות לחקירה עצמית&quot; — בלי תיבה/מסגרת/רקע, רק כותרת מודגשת ובולטים */
+.moshe-questions-box {
+    margin: 48px 0 0 0;
+}
+
+.moshe-questions-title {
+    margin: 0 0 24px 0;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: &#x27;Fredoka-bold&#x27;, &#x27;Fredoka-SemiBold&#x27;, sans-serif !important;
+    color: #000a11 !important;
+    text-align: right;
+    display: block;
+}
+
+.moshe-questions-list {
+    list-style-type: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.moshe-questions-list li {
+    margin-bottom: 16px;
+    padding-right: 24px;
+    position: relative;
+    color: #000a11 !important;
+    font-family: &#x27;Fredoka&#x27;, &#x27;Fredoka-Regular&#x27;, sans-serif !important;
+    font-weight: 400;
+    text-align: justify !important;
+    line-height: 1.6 !important;
+    font-size: 16px;
+}
+
+.moshe-questions-list li:last-child {
+    margin-bottom: 0;
+}
+
+.moshe-questions-list li::before {
+    content: &quot;•&quot;;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #000a11;
+    font-size: 24px;
+    line-height: 1;
+}
+
+/* אקורדיון מונחים — 5 קטגוריות קבועות */
+details.moshe-term-1 {
+    border: 2px solid var(--acc-1-border);
+    background-color: var(--acc-1-bg);
+}
+
+details.moshe-term-1 summary {
+    background-color: var(--acc-1-border);
+}
+
+details.moshe-term-2 {
+    border: 2px solid var(--acc-2-border);
+    background-color: var(--acc-2-bg);
+}
+
+details.moshe-term-2 summary {
+    background-color: var(--acc-2-border);
+}
+
+details.moshe-term-3 {
+    border: 2px solid var(--acc-3-border);
+    background-color: var(--acc-3-bg);
+}
+
+details.moshe-term-3 summary {
+    background-color: var(--acc-3-border);
+}
+
+details.moshe-term-4 {
+    border: 2px solid var(--acc-4-border);
+    background-color: var(--acc-4-bg);
+}
+
+details.moshe-term-4 summary {
+    background-color: var(--acc-4-border);
+}
+
+details.moshe-term-5 {
+    border: 2px solid var(--acc-5-border);
+    background-color: var(--acc-5-bg);
+}
+
+details.moshe-term-5 summary {
+    background-color: var(--acc-5-border);
+}
+
+details[class^=&quot;moshe-term-&quot;] {
+    margin-bottom: 16px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+details[class^=&quot;moshe-term-&quot;] summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 16px 24px;
+    color: var(--moshe-ink);
+    font-size: 16px;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, sans-serif;
+    font-weight: 700;
+    margin: 0;
+    outline: none;
+    user-select: none;
+}
+
+details[class^=&quot;moshe-term-&quot;]&gt;div {
+    padding: 24px;
+}
+
+</div>
+<div class="css-sec" id="sec-11">/* ---------- 11א. גופן בסרגל הצדדי ----------
+   מחריגים svg / class עם &quot;icon&quot;/&quot;fa-&quot; כדי לא לשבור אייקוני-גופן */
+#course-outline-sidebar,
+#course-outline-sidebar *:not(svg):not([class*=&quot;icon&quot;]):not([class*=&quot;fa-&quot;]) {
+    font-family: &#x27;Fredoka&#x27;, &#x27;FedraSansBarilan-Book&#x27;, -apple-system, BlinkMacSystemFont,
+        &#x27;Segoe UI&#x27;, Roboto, &#x27;Helvetica Neue&#x27;, Arial, sans-serif !important;
+}
+
+</div>
+<div class="css-sec" id="sec-12">/* ---------- 11. לוגו הקורס — בסרגל הניווט הצדדי ----------
+   #course-outline-sidebar הוא ID קבוע (לא class מקונן), שאול מדפוס
+   מאומת מקורס הרב זקס. */
+#course-outline-sidebar&gt;div:first-of-type {
+    position: relative;
+    padding-top: 190px;
+}
+
+#course-outline-sidebar&gt;div:first-of-type::before {
+    content: &quot;&quot;;
+    position: absolute;
+    top: 20px;
+    right: 0;
+    width: 95%;
+    height: 150px;
+    background-image: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@LOGO_SVG.svg&quot;);
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: contain;
+    z-index: 0;
+}
+
+</div>
+<div class="css-sec" id="sec-13">/* ---------- 12. מסגרת תוחמת ברמת היחידה (unit) ----------
+   .course-wrapper main#main — קיים בפועל בתוך ה-iframe של התוכן
+   (לא במסמך החיצוני). מסגרת אחת שעוטפת את כל היחידה (טקסט+וידאו). */
+.course-wrapper main#main {
+    border: 1px solid var(--moshe-header-border);
+    border-radius: 30px;
+    padding: 32px;
+    padding-top: 21px;
+    position: relative;
+    overflow: visible;
+}
+
+</div>
+<div class="css-sec" id="sec-14">/* ---------- 13. ניווט עליון — תיקוני התנהגות בלבד ---------- */
+.sequence-navigation .sequence-navigation-tabs {
+    overflow: hidden !important;
+}
+
+/* פסאודו-אלמנט ::after יוצר קו לא-רצוי מתחת לטאב הפעיל — לא
+   border-bottom (שאול מקורס DigitalIL) */
+.sequence-navigation .btn.active::after {
+    display: none !important;
+}
+
+/* קווים אנכיים סביב אזור התוכן — שאול מקורס הרב זקס */
+.sequence {
+    border-right: none !important;
+    border-left: none !important;
+}
+
+</div>
+<div class="css-sec" id="sec-15">/* ---------- 13א. הטאב האמצעי (אייקון וידאו) בבר הניווט ----------
+   סלקטור מאומת: a.btn.btn-link בתוך .sequence-navigation-tabs,
+   עם svg.unit-icon (fill: currentColor) בפנים. */
+.sequence-navigation-tabs a.btn-link {
+    border: 1px solid var(--moshe-cta-bg) !important;
+    border-radius: 9999px !important;
+    color: var(--moshe-cta-bg) !important;
+    transition: background-color 0.15s ease;
+    margin: 0 8px !important;
+}
+
+.sequence-navigation-tabs a.btn-link:hover {
+    background-color: var(--moshe-blue-box-bg) !important;
+}
+
+.sequence-navigation-tabs a.btn-link .unit-icon {
+    color: var(--moshe-cta-bg) !important;
+}
+
+</div>
+<div class="css-sec" id="sec-16">/* ---------- 14. .moshe-frame — רכיב אופציונלי, לא פעיל אוטומטית ---------- */
+.moshe-frame {
+    border: 1px solid var(--moshe-header-border);
+    border-radius: 30px;
+    padding: 32px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+</div>
+<div class="css-sec" id="sec-17">/* ---------- 15. הסרת קו מפריד בין רכיבים בתוך יחידה ----------
+   שאול מקורס הרב זקס — &quot;.vert-mod&quot;/&quot;.vert&quot; ייתכן ולא קיימים בגרסת
+   ה-MFE הזו; לא אומת ישירות. */
+.course-content .vert-mod .vert,
+.courseware-results-wrapper .vert-mod .vert {
+    border-bottom: 0px solid #ddd !important;
+    margin-bottom: 15px;
+    padding: 0 0 15px;
+}
+
+.course-content .vert-mod .vert {
+    border-bottom: none !important;
+}
+
+</div>
+<div class="css-sec" id="sec-18">/* ---------- 16. גופן בניווט הכללי העליון ---------- */
+#courseTabsNavigation a,
+#courseTabsNavigation .nav-link {
+    font-family: &#x27;Fredoka&#x27;, &#x27;FedraSansBarilan-Book&#x27;, -apple-system, BlinkMacSystemFont,
+        &#x27;Segoe UI&#x27;, Roboto, &#x27;Helvetica Neue&#x27;, Arial, sans-serif !important;
+}
+
+/* 16א. hover/active — nav.nav-underline-tabs .nav-item.flex-shrink-0.nav-link */
+#courseTabsNavigation nav.nav-underline-tabs .nav-link {
+    transition: color 0.15s ease, border-bottom-color 0.15s ease;
+    border-bottom: 3px solid transparent !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    font-family: &#x27;Fredoka-SemiBold&#x27;, &#x27;Fredoka&#x27;, sans-serif !important;
+    font-weight: 700 !important;
+}
+
+#courseTabsNavigation nav.nav-underline-tabs .nav-link:hover,
+#courseTabsNavigation nav.nav-underline-tabs .nav-link.active {
+    color: var(--moshe-turquoise) !important;
+    border-bottom-color: var(--moshe-turquoise) !important;
+    background: transparent !important;
+}
+
+</div>
+<div class="css-sec" id="sec-19">/* ---------- 17. באנר מעל הניווט הכללי ----------
+   שדה &quot;תמונת הבאנר&quot; ב-Advanced Settings אינו מתממש אוטומטית —
+   זהו המקור היחיד להצגת הבאנר. שם קובץ נוכחי: MOSHE_BANNER_08.09.26.jpg
+   (מומלץ לקבע שם קבוע כדי לא לעדכן כאן בכל החלפה). */
+#courseTabsNavigation nav.nav-underline-tabs {
+    background-image: url(&quot;https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@MOSHE_BANNER_08.09.26.jpg&quot;);
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 230px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    border-radius: 16px;
+}
+
+/* ============================================================
+   סוף קובץ — מקרא class-ים מלא: מקרא-עיצוב-חי.html
+   ============================================================ */
+</div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.item').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.querySelectorAll('.css-sec.highlight').forEach(el => el.classList.remove('highlight'));
+        target.classList.add('highlight');
+        setTimeout(() => target.classList.remove('highlight'), 2500);
+    });
+});
+</script>
+
+</body>
+</html>
