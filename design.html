@@ -2,350 +2,449 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>מקרא עיצוב — קורס משה (קמפוס)</title>
+<title>מחולל התאמה לקמפוס — קורס משה</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
 
-:root {
-    --moshe-ink: #000a11;
-    --moshe-blue-box-bg: #e8f1fa;
-    --moshe-blue-box-border: #d6e4f6;
-    --moshe-blue-box-text: #254768;
-    --moshe-red-box-bg: #ffeeeb;
-    --moshe-red-box-border: #f6dcd9;
-    --moshe-red-box-text: #b72f1a;
-    --moshe-turquoise: #569eb8;
-    --moshe-header-grad: linear-gradient(to left, #ebf2f7 0%, #cedfef 50%, #b0cbec 100%);
-    --moshe-header-border: #cedfef;
-}
+* { box-sizing: border-box; }
 
 body {
     font-family: 'Fredoka', sans-serif;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 24px;
-    color: var(--moshe-ink);
+    padding: 32px 24px;
+    color: #000a11;
     background: #fafbfc;
 }
 
-h1.page-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.page-subtitle {
-    color: #6b7280;
-    font-size: 15px;
-    margin-bottom: 40px;
-}
-
-.entry {
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.entry-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-}
-
-.entry-name {
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.entry-class {
-    font-family: monospace;
-    background: #eef2f6;
-    color: #254768;
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-size: 13px;
-    direction: ltr;
-}
-
-.entry-status {
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-weight: 600;
-}
-
-.status-exists { background: #dcfce7; color: #166534; }
-.status-new { background: #fef9c3; color: #854d0e; }
-.status-auto { background: #e0e7ff; color: #3730a3; }
-
-.demo-box { margin: 16px 0; }
-
-.moshe-unit-title {
-    display: block;
-    font-family: 'Fredoka-SemiBold', 'Fredoka-bold', sans-serif;
-    font-weight: 700;
-    margin: 0 0 16px 0;
+h1 {
     font-size: 24px;
-    color: var(--moshe-ink);
-}
-
-.moshe-body-text {
-    margin: 0;
-    font-weight: 400;
-    font-size: 16px;
-    color: var(--moshe-ink);
-    text-align: justify;
-}
-
-.moshe-verse-box {
-    background-color: var(--moshe-blue-box-bg);
-    border: 1px solid var(--moshe-blue-box-border);
-    border-radius: 24px;
-    padding: 32px 40px;
-    margin: 0;
-}
-.moshe-verse-box .quote {
-    display: block;
-    font-family: 'Fredoka-SemiBold', sans-serif;
     font-weight: 700;
-    color: var(--moshe-blue-box-text);
-    font-size: 18px;
-    margin-bottom: 8px;
-}
-.moshe-verse-box .source {
-    display: block;
-    color: var(--moshe-blue-box-text);
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
+    margin-bottom: 4px;
 }
 
-.moshe-commentary-box {
-    background-color: var(--moshe-red-box-bg);
-    border: 1px solid var(--moshe-red-box-border);
-    border-radius: 24px;
-    padding: 32px 40px;
-    margin: 0;
-}
-.moshe-commentary-box p {
-    color: var(--moshe-red-box-text);
-    font-family: 'Fredoka-SemiBold', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    margin: 0;
-}
-.moshe-commentary-box .source {
-    display: block;
-    margin-top: 12px;
-    color: var(--moshe-red-box-text);
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-}
-
-.moshe-emphasis {
-    color: var(--moshe-turquoise);
-    font-family: 'Fredoka-SemiBold', sans-serif;
-    font-weight: 700;
-}
-
-.moshe-emphasis-red {
-    color: var(--moshe-red-box-text);
-    font-family: 'Fredoka-SemiBold', sans-serif;
-    font-weight: 700;
-}
-
-.moshe-video-box {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-}
-.moshe-video-frame {
-    position: relative;
-    width: 100%;
-    padding-bottom: 40%;
-    overflow: hidden;
-    border-radius: 24px;
-    background-color: var(--moshe-blue-box-bg);
-    box-sizing: border-box;
-    border: 1px solid var(--moshe-blue-box-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--moshe-blue-box-text);
-    font-size: 14px;
-}
-
-.demo-capsule-wrap {
-    width: 100%;
-    min-height: 60px;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    padding: 12px 40px;
-    box-sizing: border-box;
-    background: var(--moshe-header-grad);
-}
-.demo-capsule-wrap h1 {
-    font-family: 'Fredoka-SemiBold', sans-serif;
-    font-weight: 700;
-    font-size: 28px;
-    margin: 0;
-    color: var(--moshe-ink);
-}
-
-.demo-frame {
-    border: 1px solid var(--moshe-header-border);
-    border-radius: 30px;
-    padding: 24px;
-}
-
-.demo-frame-inner-note {
-    font-size: 13px;
+.subtitle {
     color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 24px;
 }
 
-.code-block {
-    background: #1e293b;
-    color: #e2e8f0;
-    border-radius: 10px;
-    padding: 16px 20px;
-    font-family: monospace;
+.warning {
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    color: #854d0e;
+    border-radius: 12px;
+    padding: 12px 16px;
     font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 800px) {
+    .columns { grid-template-columns: 1fr; }
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.panel-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #254768;
+}
+
+textarea {
+    width: 100%;
+    height: 420px;
     direction: ltr;
     text-align: left;
-    overflow-x: auto;
-    margin-top: 12px;
+    font-family: monospace;
+    font-size: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 12px;
+    resize: vertical;
 }
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+button {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #254768;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #e8f1fa;
+    color: #254768;
+}
+
+.log {
+    margin-top: 16px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.log-item { margin-bottom: 4px; }
+.log-hit { color: #166534; }
+.log-miss { color: #9a3412; }
 </style>
 </head>
 <body>
 
-<h1 class="page-title">מקרא עיצוב — תוכן יחידות (קמפוס)</h1>
-<p class="page-subtitle">כל class מוצג כאן עם דוגמה חיה מעוצבת. כלל אצבע: אין style="" inline ביחידה חדשה — רק class מהרשימה הזו.</p>
+<h1>מחולל התאמה לקמפוס — קורס משה</h1>
+<p class="subtitle">מדביקים HTML (מ-Claude, ChatGPT, או יחידה ישנה) בצד ימין, לוחצים "המר", ומקבלים משמאל גרסה עם class-ים מ-custom-style.css במקום style="" inline.</p>
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">כותרת ראשית (הקפסולה)</span>
-    <span class="entry-status status-auto">אוטומטי מהפלטפורמה</span>
+<div class="warning">
+⚠️ זיהוי היוריסטי לפי צבעים ומבנה מוכרים — לא בינה מלאכותית. תמיד לעבור עין על התוצאה לפני הדבקה בקמפוס בפועל. אם הדפוס לא מוכר, השורה תישאר כמו שהיא עם הערת ⚠️ בקוד.<br><br>
+עודכן: קריאות ל-<code>Moshe-Symbol</code> מומרות אוטומטית לנתיב המלא בקורס (<code>Moshe-Symbol.png</code>). שמות קבצים גולמיים אחרים (לא URL מלא) מקבלים את אותה קידומת נתיב, בלי לשנות את שם הקובץ. תגיות <code>&lt;article&gt;</code> ממורכזות אוטומטית כמו wrapper יחידה. פסקאות שהיו עטופות כולן ב-bold מפורקות לגופן רגולר.
+</div>
+
+<div class="columns">
+  <div class="panel">
+    <div class="panel-title">קלט — הדבק כאן קוד גולמי</div>
+    <textarea id="input" placeholder="&lt;div style=&quot;...&quot;&gt;...&lt;/div&gt;"></textarea>
   </div>
-  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">לא בונים ידנית — h1.mb-0.h3 מיוצר ע"י Open edX (סעיף 4). מוצג כאן רק להמחשה חזותית.</p>
-  <div class="demo-box demo-capsule-wrap">
-    <h1>כותרת היחידה כאן</h1>
+  <div class="panel">
+    <div class="panel-title">פלט — גרסת class-ים לקמפוס</div>
+    <textarea id="output" readonly placeholder="התוצאה תופיע כאן אחרי לחיצה על המר"></textarea>
   </div>
 </div>
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">מסגרת עוטפת חיצונית</span>
-    <span class="entry-status status-auto">אוטומטי מהפלטפורמה</span>
-  </div>
-  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">לא בונים ידנית — .course-wrapper main#main ברמת היחידה (סעיף 12).</p>
-  <div class="demo-box demo-frame">
-    <p class="demo-frame-inner-note">התוכן של היחידה (כותרת משנה, פסקאות, תיבות) יושב כאן בפנים אוטומטית.</p>
-  </div>
+<div class="controls">
+  <button class="btn-primary" onclick="convert()">המר ←</button>
+  <button class="btn-secondary" onclick="copyOutput()">העתק פלט</button>
+  <button class="btn-secondary" onclick="clearAll()">נקה הכל</button>
 </div>
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">כותרת משנה בתוך התוכן</span>
-    <span class="entry-class">.moshe-unit-title</span>
-    <span class="entry-status status-exists">קיים</span>
-  </div>
-  <div class="demo-box">
-    <h2 class="moshe-unit-title">מהסלע במדבר אל עידן המחר</h2>
-  </div>
-  <div class="code-block">&lt;h2 class="moshe-unit-title"&gt;כותרת המשנה&lt;/h2&gt;</div>
-</div>
+<div class="log" id="log">הרץ המרה כדי לראות מה זוהה.</div>
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">פסקת טקסט רגילה</span>
-    <span class="entry-class">.moshe-body-text</span>
-    <span class="entry-status status-exists">קיים</span>
-  </div>
-  <div class="demo-box">
-    <p class="moshe-body-text">ביחידה זו נחקור את נקודת המפנה הטראגית של משה ונשליך את תכונותיו הייחודיות אל עבר אתגרי העתיד — טקסט לדוגמה בלבד, יישור לשני הצדדים וצבע אחיד.</p>
-  </div>
-  <div class="code-block">&lt;p class="moshe-body-text"&gt;טקסט הפסקה...&lt;/p&gt;</div>
-</div>
+<script>
+function filterStyle(styleStr, removeProps) {
+    if (!styleStr) return '';
+    const parts = styleStr.split(';').map(s => s.trim()).filter(Boolean);
+    const keep = parts.filter(p => {
+        const prop = p.split(':')[0].trim().toLowerCase();
+        return !removeProps.includes(prop);
+    });
+    return keep.length ? keep.join('; ') + ';' : '';
+}
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">תיבת ציטוט/פסוק (רקע תכלת)</span>
-    <span class="entry-class">.moshe-verse-box</span>
-    <span class="entry-status status-exists">קיים</span>
-  </div>
-  <div class="demo-box moshe-verse-box">
-    <span class="quote">"כִּי אָדָם אֵין צַדִּיק בָּאָרֶץ אֲשֶׁר יַעֲשֶׂה טּוֹב וְלֹא יֶחֱטָא"</span>
-    <span class="source">(קהלת ז', כ')</span>
-  </div>
-  <div class="code-block">&lt;div class="moshe-verse-box"&gt;
-  &lt;span class="quote"&gt;"הטקסט המצוטט..."&lt;/span&gt;
-  &lt;span class="source"&gt;(המקור)&lt;/span&gt;
-&lt;/div&gt;</div>
-</div>
+function norm(s) {
+    return (s || '').toLowerCase().replace(/\s+/g, '');
+}
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">תיבת פרשנות / רמב"ם (רקע קורל)</span>
-    <span class="entry-class">.moshe-commentary-box</span>
-    <span class="entry-status status-exists">קיים</span>
-  </div>
-  <div class="demo-box moshe-commentary-box">
-    <p>"וכאשר ראוהו שכעס, אמרו שהוא עליו השלום אינו מי שיש לו פחיתות מידה... אלא אמר: <strong class="moshe-emphasis-red">'קח את המטה וכו״'</strong>"</p>
-    <span class="source">(פירוש המשנה לרמב"ם, מסכת אבות)</span>
-  </div>
-  <div class="code-block">&lt;div class="moshe-commentary-box"&gt;
-  &lt;p&gt;"הטקסט..." &lt;strong class="moshe-emphasis-red"&gt;משפט מודגש&lt;/strong&gt;&lt;/p&gt;
-  &lt;span class="source"&gt;(המקור)&lt;/span&gt;
-&lt;/div&gt;</div>
-</div>
+const ASSET_BASE = 'https://courses.campus.gov.il/asset-v1:BIU+ACD_MOSH_HE+2026_1+type@asset+block@';
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">הדגשת מילה — כחול/טורקיז</span>
-    <span class="entry-class">.moshe-emphasis</span>
-    <span class="entry-status status-exists">קיים</span>
-  </div>
-  <div class="demo-box">
-    <p class="moshe-body-text">משה ואהרן אמרו <strong class="moshe-emphasis">"הֲמִן־הַסֶּלַע הַזֶּה נוֹצִיא לָכֶם מָיִם"</strong> ולא "יוציא".</p>
-  </div>
-  <div class="code-block">&lt;strong class="moshe-emphasis"&gt;מילה מודגשת&lt;/strong&gt;</div>
-</div>
+// מחזיר true אם המחרוזת כבר מצביעה לנתיב הקבצים של קמפוס (לא לגעת)
+function isAlreadyCampusPath(s) {
+    return /courses\.campus\.gov\.il/i.test(s || '');
+}
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">הדגשת מילה — אדום</span>
-    <span class="entry-class">.moshe-emphasis-red</span>
-    <span class="entry-status status-new">נוסף היום</span>
-  </div>
-  <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">בשימוש רק בתוך תיבת רמב"ם/פרשנות אדומה — ראו דוגמה למעלה.</p>
-  <div class="code-block">&lt;strong class="moshe-emphasis-red"&gt;מילה מודגשת&lt;/strong&gt;</div>
-</div>
+// פותר הפניה לקובץ: מוציא את שם הקובץ בלבד (הסגמנט האחרון בנתיב,
+// גם אם זה URL מלא מהמודל כמו https://.../xxx.png או /mnt/.../xxx.png),
+// ובונה מחדש עם נתיב הנכסים של קמפוס + אותו שם קובץ בדיוק.
+// "Moshe-Symbol" בלי סיומת מקבל טיפול מיוחד — .png קבוע.
+function resolveAssetPath(raw) {
+    if (!raw) return raw;
+    const trimmed = raw.trim();
+    if (isAlreadyCampusPath(trimmed)) return trimmed; // כבר נתיב קמפוס — לא נוגעים
+    // חילוץ שם הקובץ: הסגמנט האחרון אחרי / (או המחרוזת כולה אם אין /)
+    let filename = trimmed.split('/').pop().split('?')[0].split('#')[0];
+    if (!filename) return trimmed;
+    if (/^moshe-symbol(\.[a-z0-9]+)?$/i.test(filename)) {
+        filename = 'Moshe-Symbol.png';
+    }
+    return ASSET_BASE + filename;
+}
 
-<div class="entry">
-  <div class="entry-label">
-    <span class="entry-name">תיבת וידאו (16:9 responsive)</span>
-    <span class="entry-class">.moshe-video-box</span>
-    <span class="entry-status status-new">נוסף היום</span>
-  </div>
-  <div class="demo-box moshe-video-box">
-    <div class="moshe-video-frame">[ iframe יוטיוב נכנס כאן ]</div>
-  </div>
-  <div class="code-block">&lt;div class="moshe-video-box"&gt;
-  &lt;div class="moshe-video-frame"&gt;
-    &lt;iframe title="נגן וידאו" src="https://www.youtube.com/embed/XXXXX"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen="allowfullscreen"
-      referrerpolicy="strict-origin-when-cross-origin"&gt;&lt;/iframe&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</div>
-</div>
+function fixAssetReferences(root, log) {
+    root.querySelectorAll('img[src]').forEach(img => {
+        const before = img.getAttribute('src');
+        const after = resolveAssetPath(before);
+        if (after !== before) {
+            img.setAttribute('src', after);
+            log.push({ok:true, text:'נתיב img תוקן: "' + before + '" → ' + after});
+        }
+    });
+    root.querySelectorAll('[href]').forEach(el => {
+        const before = el.getAttribute('href');
+        if (before && !isAlreadyCampusPath(before) && !before.startsWith('#') && !before.startsWith('mailto:')) {
+            const after = resolveAssetPath(before);
+            el.setAttribute('href', after);
+            log.push({ok:true, text:'נתיב href תוקן: "' + before + '" → ' + after});
+        }
+    });
+}
 
-<p style="font-size:13px;color:#9ca3af;margin-top:40px;">קובץ זה הוא מקרא ויזואלי בלבד (לצפייה בדפדפן) — הצבעים/פונטים מועתקים מתוך custom-style.css, לא מחוברים אליו. אם משנים class ב-CSS הראשי, יש לעדכן גם כאן ידנית כדי שהמקרא יישאר מדויק.</p>
+function convert() {
+    const input = document.getElementById('input').value;
+    const log = [];
+    let doc;
+    try {
+        const parser = new DOMParser();
+        doc = parser.parseFromString('<div id="__root__">' + input + '</div>', 'text/html');
+    } catch (e) {
+        document.getElementById('output').value = '⚠️ שגיאת פענוח HTML: ' + e.message;
+        return;
+    }
+    const root = doc.getElementById('__root__');
+
+    // צבעי הפלטה לזיהוי
+    const BLUE_BG = ['#e8f1fa'];
+    const BLUE_BORDER = ['#d6e4f6'];
+    const BLUE_TEXT = ['#254768'];
+    const RED_BG = ['#ffeeeb'];
+    const RED_BORDER = ['#f6dcd9'];
+    const RED_TEXT = ['#b72f1a'];
+    const TURQUOISE = ['#569eb8'];
+
+    function styleHas(el, needles) {
+        const s = norm(el.getAttribute('style'));
+        return needles.some(n => s.includes(norm(n)));
+    }
+
+    // 1. h1 -> הערה שהכותרת אוטומטית, הסרה
+    root.querySelectorAll('h1').forEach(h1 => {
+        const comment = doc.createComment(' ⚠️ הוסר: כותרת h1 מיוצרת אוטומטית ע"י הפלטפורמה (h1.mb-0.h3) — טקסט מקורי: "' + h1.textContent.trim() + '" ');
+        h1.closest('div') && h1.closest('div').parentNode ? null : null;
+        h1.replaceWith(comment);
+        log.push({ok:true, text:'הוסר h1 (כותרת אוטומטית) — "' + h1.textContent.trim().slice(0,30) + '..."'});
+    });
+
+    // 2. h2 -> class moshe-unit-title
+    root.querySelectorAll('h2').forEach(h2 => {
+        h2.removeAttribute('style');
+        h2.setAttribute('class', 'moshe-unit-title');
+        log.push({ok:true, text:'h2 → moshe-unit-title'});
+    });
+
+    // 3א. פסקה שמתחילה ב"כלי #N:" (או "כלי N:") — כותרת-משנה, לא
+    // פסקת גוף רגילה. הופכים ל-h3.moshe-subtitle.
+    root.querySelectorAll('p').forEach(p => {
+        const text = p.textContent.trim();
+        if (/^כלי\s*#?\s*\d+\s*[:׃]/.test(text)) {
+            const h3 = document.createElement('h3');
+            h3.className = 'moshe-subtitle';
+            h3.innerHTML = p.innerHTML.trim();
+            p.replaceWith(h3);
+            log.push({ok:true, text:'פסקה "כלי #N:" → h3.moshe-subtitle: "' + text.slice(0,30) + '..."'});
+        }
+    });
+
+    // 3. p -> class moshe-body-text, בגופן רגיל (לא בולד)
+    //    אם הפסקה כולה עטופה ב-strong/b יחיד (כל הטקסט מודגש) — זו טעות
+    //    נפוצה מהמודל; מפרקים את העטיפה כדי שהטקסט הרץ יהיה רגולר,
+    //    לא בולד. הדגשות אמיתיות (מילה בודדת) לא נפגעות — הן מטופלות
+    //    בנפרד בשלב 4 (strong עם צבע).
+    root.querySelectorAll('p').forEach(p => {
+        if (p.children.length === 1 && ['STRONG','B'].includes(p.children[0].tagName) &&
+            p.children[0].textContent.trim() === p.textContent.trim()) {
+            const inner = p.children[0].innerHTML;
+            p.innerHTML = inner;
+            log.push({ok:true, text:'פסקה שהייתה עטופה כולה ב-bold פורקה לגופן רגולר'});
+        }
+        p.removeAttribute('style');
+        p.setAttribute('class', 'moshe-body-text');
+        log.push({ok:true, text:'p → moshe-body-text (רגולר, לא בולד)'});
+    });
+
+    // 4. strong עם צבע טורקיז -> moshe-emphasis, עם צבע אדום -> moshe-emphasis-red
+    root.querySelectorAll('strong').forEach(s => {
+        if (styleHas(s, TURQUOISE)) {
+            s.removeAttribute('style');
+            s.setAttribute('class', 'moshe-emphasis');
+            log.push({ok:true, text:'strong (טורקיז) → moshe-emphasis'});
+        } else if (styleHas(s, RED_TEXT)) {
+            s.removeAttribute('style');
+            s.setAttribute('class', 'moshe-emphasis-red');
+            log.push({ok:true, text:'strong (אדום) → moshe-emphasis-red'});
+        } else if (s.hasAttribute('style')) {
+            log.push({ok:false, text:'strong עם style לא מזוהה — נשאר כמו שהוא: ' + s.getAttribute('style').slice(0,40)});
+        }
+    });
+
+    // 4א. "מבנה קונצנטרי" — div חיצוני שכל ילדיו הישירים הם div עם
+    // padding-right (שורות מודרגות בהזחה). מזהים לפי מבנה, לא צבע.
+    // מסירים font-family/color/line-height מכל שורה (יגיעו מה-class),
+    // אבל שומרים padding-right/margin/font-size ייחודיים לכל שורה.
+    // strong פנימי מאבד את ה-style שלו — מקבל Fredoka-bold מהכלל
+    // .moshe-concentric-block strong אוטומטית.
+    root.querySelectorAll('div').forEach(div => {
+        const children = Array.from(div.children);
+        const looksConcentric = children.length >= 3 &&
+            children.every(c => c.tagName === 'DIV' && /padding-right/i.test(c.getAttribute('style') || ''));
+        if (looksConcentric) {
+            div.removeAttribute('style');
+            div.setAttribute('class', 'moshe-concentric-block');
+            children.forEach(c => {
+                const filtered = filterStyle(c.getAttribute('style'), ['font-family', 'color', 'line-height']);
+                if (filtered) c.setAttribute('style', filtered); else c.removeAttribute('style');
+            });
+            div.querySelectorAll('strong').forEach(s => s.removeAttribute('style'));
+            log.push({ok:true, text:'div מדורג (padding-right) → moshe-concentric-block ("מבנה קונצנטרי")'});
+        }
+    });
+
+    // 4ב. תיבת "שאלות לחקירה עצמית" — div שמכיל בדיוק h2/h3 ואחריו ul.
+    // מזהים לפי מבנה (כותרת+רשימה), לא לפי הטקסט של הכותרת עצמה —
+    // כך זה יעבוד גם אם הכותרת תנוסח אחרת בעתיד ("שאלות למחשבה" וכו').
+    root.querySelectorAll('div').forEach(div => {
+        const children = Array.from(div.children);
+        const heading = children.find(c => c.tagName === 'H2' || c.tagName === 'H3');
+        const list = children.find(c => c.tagName === 'UL' || c.tagName === 'OL');
+        if (children.length === 2 && heading && list && children.indexOf(heading) < children.indexOf(list)) {
+            div.removeAttribute('style');
+            div.setAttribute('class', 'moshe-questions-box');
+            heading.removeAttribute('style');
+            heading.setAttribute('class', 'moshe-questions-title');
+            list.removeAttribute('style');
+            list.setAttribute('class', 'moshe-questions-list');
+            list.querySelectorAll('li').forEach(li => li.removeAttribute('style'));
+            log.push({ok:true, text:'div (כותרת+רשימה) → moshe-questions-box'});
+        }
+    });
+
+    // 5. div עם רקע כחול -> moshe-verse-box, אלא אם זה בעצם "כרטיס מאמר"
+    // (אייקון + כותרת h3/h4 + פסקה + כפתור <a>) — אז moshe-article-card.
+    // חשוב לבדוק את זה *לפני* verse-box, אחרת ה-p הראשון בכרטיס מקבל
+    // בטעות class="quote" (בולד, כחול, לא ממורכז) במקום טקסט רגיל.
+    root.querySelectorAll('div').forEach(div => {
+        const isBlueBg = styleHas(div, BLUE_BG) || styleHas(div, BLUE_BORDER);
+        const isRedBg = styleHas(div, RED_BG) || styleHas(div, RED_BORDER);
+        const hasImg = div.querySelector('img');
+        const hasHeading = div.querySelector('h3, h4');
+        const hasLink = div.querySelector('a');
+
+        if (isBlueBg && hasImg && hasHeading && hasLink) {
+            // כרטיס מאמר — לא תיבת ציטוט
+            div.removeAttribute('style');
+            div.setAttribute('class', 'moshe-article-card');
+            const img = div.querySelector('img');
+            if (img) { img.removeAttribute('style'); img.setAttribute('class', 'moshe-article-card-icon'); }
+            const heading = div.querySelector('h3, h4');
+            if (heading) { heading.removeAttribute('style'); heading.setAttribute('class', 'moshe-article-card-title'); }
+            const p = div.querySelector('p');
+            if (p) { p.removeAttribute('style'); p.setAttribute('class', 'moshe-article-card-text'); }
+            const a = div.querySelector('a');
+            if (a) { a.removeAttribute('style'); a.setAttribute('class', 'moshe-article-card-button'); a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener noreferrer'); }
+            log.push({ok:true, text:'div (אייקון+כותרת+כפתור) → moshe-article-card (לא verse-box!)'});
+        } else if (isBlueBg) {
+            div.removeAttribute('style');
+            div.setAttribute('class', 'moshe-verse-box');
+            const children = Array.from(div.children).filter(c => c.tagName === 'SPAN' || c.tagName === 'P');
+            if (children[0]) { children[0].removeAttribute('style'); children[0].setAttribute('class', 'quote'); }
+            if (children[1]) { children[1].removeAttribute('style'); children[1].setAttribute('class', 'source'); }
+            log.push({ok:true, text:'div (רקע תכלת) → moshe-verse-box + quote/source'});
+        } else if (isRedBg) {
+            div.removeAttribute('style');
+            div.setAttribute('class', 'moshe-commentary-box');
+            const span = Array.from(div.children).find(c => c.tagName === 'SPAN');
+            if (span) { span.removeAttribute('style'); span.setAttribute('class', 'source'); }
+            log.push({ok:true, text:'div (רקע קורל) → moshe-commentary-box + source'});
+        }
+    });
+
+    // 6. div עוטף iframe (16:9) -> moshe-video-box > moshe-video-frame
+    root.querySelectorAll('iframe').forEach(iframe => {
+        const inner = iframe.parentElement; // ה-div עם position:relative/padding-bottom
+        const outer = inner && inner.parentElement; // ה-div העוטף (text-align:center וכו')
+        if (inner && norm(inner.getAttribute('style') || '').includes('paddingbottom')) {
+            inner.removeAttribute('style');
+            inner.setAttribute('class', 'moshe-video-frame');
+            log.push({ok:true, text:'div פנימי של הוידאו → moshe-video-frame'});
+            if (outer && outer.tagName === 'DIV') {
+                outer.removeAttribute('style');
+                outer.setAttribute('class', 'moshe-video-box');
+                log.push({ok:true, text:'div חיצוני של הוידאו → moshe-video-box'});
+            }
+        } else {
+            log.push({ok:false, text:'נמצא iframe אבל מבנה העטיפה לא זוהה — לבדוק ידנית'});
+        }
+        iframe.removeAttribute('style');
+    });
+
+    // 7. ה-div העוטף הכי חיצוני (dir=rtl עם font-family/max-width) -> moshe-unit-wrapper
+    Array.from(root.children).forEach(child => {
+        if (child.tagName === 'DIV' && child.getAttribute('dir') === 'rtl') {
+            child.removeAttribute('style');
+            child.setAttribute('class', 'moshe-unit-wrapper');
+            log.push({ok:true, text:'div חיצוני (dir=rtl) → moshe-unit-wrapper'});
+        }
+    });
+
+    // 7א. תגית <article> (מקטע מאמר) — צריכה להיות ממורכזת כמו
+    // moshe-unit-wrapper (max-width + margin auto), לא נשארת ברוחב מלא.
+    root.querySelectorAll('article').forEach(article => {
+        article.removeAttribute('style');
+        const existing = article.getAttribute('class') || '';
+        article.setAttribute('class', (existing + ' moshe-unit-wrapper').trim());
+        log.push({ok:true, text:'article → moshe-unit-wrapper (ממורכז)'});
+    });
+
+    // 8. תיקון נתיבי נכסים — Moshe-Symbol ושמות קבצים גולמיים
+    fixAssetReferences(root, log);
+
+    // 9. כל div עם style שנשאר ולא זוהה — סמן באזהרה (לא כולל שורות
+    // בתוך moshe-concentric-block — שם padding-right נשאר בכוונה)
+    root.querySelectorAll('div[style]').forEach(div => {
+        if (div.closest('.moshe-concentric-block')) return;
+        log.push({ok:false, text:'div עם style לא מזוהה, נשאר כמו שהוא: ' + (div.getAttribute('style') || '').slice(0,50)});
+    });
+
+    let html = root.innerHTML;
+    // ניקוי עיצוב בסיסי — הזחה גסה
+    html = html.replace(/></g, '>\n<');
+
+    document.getElementById('output').value = html.trim();
+
+    const logEl = document.getElementById('log');
+    if (log.length === 0) {
+        logEl.innerHTML = 'לא זוהו דפוסים מוכרים כלל — בדקי את הקלט.';
+    } else {
+        logEl.innerHTML = log.map(l => '<div class="log-item ' + (l.ok ? 'log-hit' : 'log-miss') + '">' + (l.ok ? '✓ ' : '⚠️ ') + l.text + '</div>').join('');
+    }
+}
+
+function copyOutput() {
+    const out = document.getElementById('output');
+    out.select();
+    document.execCommand('copy');
+}
+
+function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('log').innerHTML = 'הרץ המרה כדי לראות מה זוהה.';
+}
+</script>
 
 </body>
 </html>
