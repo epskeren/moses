@@ -115,16 +115,140 @@ button {
 .log-item { margin-bottom: 4px; }
 .log-hit { color: #166534; }
 .log-miss { color: #9a3412; }
+
+/* ===== טאבים ===== */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 10px 20px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.tab-btn.active {
+    color: #254768;
+    border-bottom-color: #254768;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ===== טאב יצירת רכיב ===== */
+.creator-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 800px) {
+    .creator-layout { grid-template-columns: 1fr; }
+}
+
+.field-group { margin-bottom: 14px; }
+
+.field-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.field-group input[type="text"],
+.field-group textarea,
+.field-group select {
+    width: 100%;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.field-group textarea {
+    min-height: 80px;
+    resize: vertical;
+    direction: rtl;
+}
+
+.field-hint {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.component-fields { display: none; }
+.component-fields.active { display: block; }
+
+/* ===== תצוגה מקדימה ויזואלית ===== */
+.preview-box {
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 10px 0 18px;
+    background: #fdfdfd;
+}
+
+.preview-label {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.preview-item { display: none; }
+.preview-item.active { display: block; }
+
+.pv-title { font-size: 20px; font-weight: 700; color: #000a11; }
+.pv-subtitle { font-size: 15px; font-weight: 700; color: #000a11; margin-top: 10px; }
+.pv-body { font-size: 14px; color: #000a11; }
+.pv-verse-box { background: #e8f1fa; border: 1px solid #d6e4f6; border-radius: 16px; padding: 14px 18px; }
+.pv-verse-box .q { display:block; font-weight:700; color:#254768; font-size:14px; margin-bottom:4px; }
+.pv-verse-box .s { display:block; color:#254768; font-size:13px; }
+.pv-commentary-box { background: #ffeeeb; border: 1px solid #f6dcd9; border-radius: 16px; padding: 14px 18px; }
+.pv-commentary-box p { color: #b72f1a; font-weight: 700; font-size: 14px; margin:0; }
+.pv-commentary-box .s { display:block; margin-top:8px; color:#b72f1a; font-size:13px; }
+.pv-questions h4 { font-size: 15px; font-weight: 700; margin: 0 0 8px; }
+.pv-questions ul { list-style:none; padding:0; margin:0; }
+.pv-questions li { position:relative; padding-right:16px; margin-bottom:6px; font-size:13px; }
+.pv-questions li::before { content:"•"; position:absolute; right:0; }
+.pv-video { background:#e8f1fa; border:1px solid #d6e4f6; border-radius:12px; height:80px; display:flex; align-items:center; justify-content:center; color:#254768; font-size:13px; }
+.pv-article-card { background:#e8f1fa; border:1px solid #d6e4f6; border-radius:16px; padding:16px; text-align:center; }
+.pv-article-card img { width:32px; height:32px; margin-bottom:8px; border-radius:50%; background:#254768; display:inline-block; }
+.pv-article-card h5 { font-size:14px; font-weight:700; color:#254768; margin:0 0 4px; }
+.pv-article-card p { font-size:12px; color:#000a11; margin:0 0 8px; }
+.pv-article-card .btn { display:inline-block; border:2px solid #da4d39; color:#da4d39; border-radius:999px; padding:4px 14px; font-size:12px; font-weight:700; }
 </style>
 </head>
 <body>
 
 <h1>מחולל התאמה לקמפוס — קורס משה</h1>
-<p class="subtitle">מדביקים HTML (מ-Claude, ChatGPT, או יחידה ישנה) בצד ימין, לוחצים "המר", ומקבלים משמאל גרסה עם class-ים מ-custom-style.css במקום style="" inline.</p>
+<p class="subtitle">שני כלים: המרת קוד קיים ל-class-ים, או יצירת רכיב חדש מאפס.</p>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('convert')">המרה מ-HTML קיים</button>
+  <button class="tab-btn" onclick="switchTab('create')">יצירת רכיב חדש</button>
+</div>
+
+<div id="tab-convert" class="tab-content active">
 
 <div class="warning">
 ⚠️ זיהוי היוריסטי לפי צבעים ומבנה מוכרים — לא בינה מלאכותית. תמיד לעבור עין על התוצאה לפני הדבקה בקמפוס בפועל. אם הדפוס לא מוכר, השורה תישאר כמו שהיא עם הערת ⚠️ בקוד.<br><br>
-עודכן: קריאות ל-<code>Moshe-Symbol</code> מומרות אוטומטית לנתיב המלא בקורס (<code>Moshe-Symbol.png</code>). שמות קבצים גולמיים אחרים (לא URL מלא) מקבלים את אותה קידומת נתיב, בלי לשנות את שם הקובץ. תגיות <code>&lt;article&gt;</code> ממורכזות אוטומטית כמו wrapper יחידה. פסקאות שהיו עטופות כולן ב-bold מפורקות לגופן רגולר.
+עודכן: קריאות ל-<code>Moshe-Symbol</code> מומרות אוטומטית לנתיב המלא בקורס (<code>Moshe-Symbol.png</code>). שמות קבצים גולמיים אחרים (לא URL מלא) מקבלים את אותה קידומת נתיב, בלי לשנות את שם הקובץ. תגיות <code>&lt;article&gt;</code> ממורכזות אוטומטית כמו wrapper יחידה. פסקאות שהיו עטופות כולן ב-bold מפורקות לגופן רגולר. פסקאות "כלי #N:" הופכות אוטומטית לכותרת-משנה h3.
 </div>
 
 <div class="columns">
@@ -146,7 +270,263 @@ button {
 
 <div class="log" id="log">הרץ המרה כדי לראות מה זוהה.</div>
 
+</div>
+
+<div id="tab-create" class="tab-content">
+
+<div class="warning">
+בוחרים סוג רכיב, ממלאים את השדות, ולוחצים "צור קוד". הפלט מוכן להדבקה ישירה ב-Raw HTML component ב-Studio — אין style="" inline, רק class-ים מ-custom-style.css.
+</div>
+
+<div class="creator-layout">
+  <div class="panel">
+    <div class="field-group">
+      <label>סוג הרכיב</label>
+      <select id="component-type" onchange="switchComponentFields()">
+        <option value="body-text">פסקת טקסט רגילה</option>
+        <option value="unit-title">כותרת ראשית (h2)</option>
+        <option value="subtitle">כותרת-משנה / "כלי #N" (h3)</option>
+        <option value="verse-box">תיבת ציטוט/פסוק (רקע תכלת)</option>
+        <option value="commentary-box">תיבת פרשנות/רמב"ם (רקע קורל)</option>
+        <option value="questions-box">שאלות לחקירה עצמית</option>
+        <option value="video-box">תיבת וידאו (16:9)</option>
+        <option value="article-card">כרטיס מאמר להורדה</option>
+      </select>
+    </div>
+
+    <div class="preview-box">
+      <div class="preview-label">כך זה נראה בפועל:</div>
+      <div id="preview-body-text" class="preview-item active">
+        <p class="pv-body">טקסט רגיל בגוף היחידה, יישור לשני הצדדים.</p>
+      </div>
+      <div id="preview-unit-title" class="preview-item">
+        <div class="pv-title">כותרת ראשית לדוגמה</div>
+      </div>
+      <div id="preview-subtitle" class="preview-item">
+        <div class="pv-subtitle">כלי #1: כותרת-משנה לדוגמה</div>
+      </div>
+      <div id="preview-verse-box" class="preview-item">
+        <div class="pv-verse-box">
+          <span class="q">"טקסט הפסוק המצוטט..."</span>
+          <span class="s">(המקור)</span>
+        </div>
+      </div>
+      <div id="preview-commentary-box" class="preview-item">
+        <div class="pv-commentary-box">
+          <p>"טקסט הפרשנות המודגש..."</p>
+          <span class="s">(המקור)</span>
+        </div>
+      </div>
+      <div id="preview-questions-box" class="preview-item">
+        <div class="pv-questions">
+          <h4>שאלות לחקירה עצמית:</h4>
+          <ul><li>שאלה ראשונה לדוגמה?</li><li>שאלה שנייה לדוגמה?</li></ul>
+        </div>
+      </div>
+      <div id="preview-video-box" class="preview-item">
+        <div class="pv-video">🎥 מסגרת וידאו 16:9</div>
+      </div>
+      <div id="preview-article-card" class="preview-item">
+        <div class="pv-article-card">
+          <img>
+          <h5>מאמר: שם המאמר</h5>
+          <p>תיאור קצר של המאמר...</p>
+          <span class="btn">פתחו מאמר לקריאה</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="fields-body-text" class="component-fields active">
+      <div class="field-group">
+        <label>טקסט הפסקה</label>
+        <textarea id="bt-text" placeholder="טקסט הפסקה כאן..."></textarea>
+      </div>
+    </div>
+
+    <div id="fields-unit-title" class="component-fields">
+      <div class="field-group">
+        <label>טקסט הכותרת</label>
+        <input type="text" id="ut-text" placeholder="כותרת המשנה בתוך התוכן">
+      </div>
+    </div>
+
+    <div id="fields-subtitle" class="component-fields">
+      <div class="field-group">
+        <label>טקסט הכותרת (למשל "כלי #1: ...")</label>
+        <input type="text" id="st-text" placeholder="כלי #1: אינטרטקסטואליות">
+      </div>
+    </div>
+
+    <div id="fields-verse-box" class="component-fields">
+      <div class="field-group">
+        <label>טקסט הפסוק/ציטוט</label>
+        <textarea id="vb-quote" placeholder='"וַיֵּלֶךְ אִישׁ..."'></textarea>
+      </div>
+      <div class="field-group">
+        <label>מקור</label>
+        <input type="text" id="vb-source" placeholder="(שמות ב', א'-ג')">
+      </div>
+    </div>
+
+    <div id="fields-commentary-box" class="component-fields">
+      <div class="field-group">
+        <label>טקסט הפרשנות</label>
+        <textarea id="cb-quote" placeholder='"וכאשר ראוהו..."'></textarea>
+      </div>
+      <div class="field-group">
+        <label>מקור</label>
+        <input type="text" id="cb-source" placeholder="(פירוש המשנה לרמב&quot;ם...)">
+      </div>
+    </div>
+
+    <div id="fields-questions-box" class="component-fields">
+      <div class="field-group">
+        <label>כותרת התיבה</label>
+        <input type="text" id="qb-title" value="שאלות לחקירה עצמית:">
+      </div>
+      <div class="field-group">
+        <label>שאלות — כל שורה = שאלה נפרדת</label>
+        <textarea id="qb-questions" placeholder="שאלה ראשונה?&#10;שאלה שנייה?&#10;שאלה שלישית?" style="min-height:120px;"></textarea>
+        <div class="field-hint">אפשר גם: <code>**תווית:** שאר הטקסט</code> — התווית תודגש אוטומטית</div>
+      </div>
+    </div>
+
+    <div id="fields-video-box" class="component-fields">
+      <div class="field-group">
+        <label>קישור YouTube (embed)</label>
+        <input type="text" id="vid-url" placeholder="https://www.youtube.com/embed/XXXXX">
+      </div>
+      <div class="field-group">
+        <label>כותרת הנגן (title attribute)</label>
+        <input type="text" id="vid-title" value="נגן וידאו">
+      </div>
+    </div>
+
+    <div id="fields-article-card" class="component-fields">
+      <div class="field-group">
+        <label>כותרת הכרטיס</label>
+        <input type="text" id="ac-title" placeholder="מאמר: שם המאמר">
+      </div>
+      <div class="field-group">
+        <label>תיאור</label>
+        <textarea id="ac-desc" placeholder="קראו את המאמר המרתק של..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>שם קובץ ה-PDF (בקמפוס, לא URL מלא)</label>
+        <input type="text" id="ac-pdf" placeholder="שם-הקובץ.pdf">
+      </div>
+      <div class="field-group">
+        <label>טקסט הכפתור</label>
+        <input type="text" id="ac-btn" value="פתחו מאמר לקריאה">
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" onclick="generateComponent()">צור קוד →</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">פלט — מוכן להדבקה</div>
+    <textarea id="create-output" readonly placeholder="הקוד יופיע כאן אחרי לחיצה על 'צור קוד'"></textarea>
+    <div class="controls">
+      <button class="btn-secondary" onclick="copyCreateOutput()">העתק פלט</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
 <script>
+function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+
+function switchComponentFields() {
+    const type = document.getElementById('component-type').value;
+    document.querySelectorAll('.component-fields').forEach(f => f.classList.remove('active'));
+    document.getElementById('fields-' + type).classList.add('active');
+    document.querySelectorAll('.preview-item').forEach(f => f.classList.remove('active'));
+    document.getElementById('preview-' + type).classList.add('active');
+}
+
+function escapeHtml(s) {
+    return (s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// ממיר **טקסט** להדגשת <strong>, ומשאיר שאר הטקסט כמו שהוא
+function parseInlineBold(s) {
+    return escapeHtml(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+function generateComponent() {
+    const type = document.getElementById('component-type').value;
+    let html = '';
+
+    if (type === 'body-text') {
+        const text = document.getElementById('bt-text').value.trim();
+        html = `<p class="moshe-body-text">\n  ${escapeHtml(text)}</p>`;
+    }
+
+    else if (type === 'unit-title') {
+        const text = document.getElementById('ut-text').value.trim();
+        html = `<h2 class="moshe-unit-title">${escapeHtml(text)}</h2>`;
+    }
+
+    else if (type === 'subtitle') {
+        const text = document.getElementById('st-text').value.trim();
+        html = `<h3 class="moshe-subtitle">${escapeHtml(text)}</h3>`;
+    }
+
+    else if (type === 'verse-box') {
+        const quote = document.getElementById('vb-quote').value.trim();
+        const source = document.getElementById('vb-source').value.trim();
+        html = `<div class="moshe-verse-box">\n  <span class="quote">\n    ${escapeHtml(quote)}</span>\n  <span class="source">\n    ${escapeHtml(source)}</span>\n</div>`;
+    }
+
+    else if (type === 'commentary-box') {
+        const quote = document.getElementById('cb-quote').value.trim();
+        const source = document.getElementById('cb-source').value.trim();
+        html = `<div class="moshe-commentary-box">\n  <p>${escapeHtml(quote)}</p>\n  <span class="source">${escapeHtml(source)}</span>\n</div>`;
+    }
+
+    else if (type === 'questions-box') {
+        const title = document.getElementById('qb-title').value.trim();
+        const lines = document.getElementById('qb-questions').value.split('\n').map(l => l.trim()).filter(Boolean);
+        const items = lines.map(l => `    <li>${parseInlineBold(l)}</li>`).join('\n');
+        html = `<div class="moshe-questions-box">\n  <h2 class="moshe-questions-title">${escapeHtml(title)}</h2>\n  <ul class="moshe-questions-list">\n${items}\n  </ul>\n</div>`;
+    }
+
+    else if (type === 'video-box') {
+        const url = document.getElementById('vid-url').value.trim();
+        const title = document.getElementById('vid-title').value.trim();
+        html = `<div class="moshe-video-box">\n  <div class="moshe-video-frame">\n    <iframe title="${escapeHtml(title)}" src="${escapeHtml(url)}"\n      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"\n      allowfullscreen="allowfullscreen"\n      referrerpolicy="strict-origin-when-cross-origin"></iframe>\n  </div>\n</div>`;
+    }
+
+    else if (type === 'article-card') {
+        const title = document.getElementById('ac-title').value.trim();
+        const desc = document.getElementById('ac-desc').value.trim();
+        const pdf = document.getElementById('ac-pdf').value.trim();
+        const btnText = document.getElementById('ac-btn').value.trim();
+        const pdfUrl = pdf ? ASSET_BASE + encodeURIComponent(pdf) : ASSET_BASE + 'שם-הקובץ.pdf';
+        html = `<div class="moshe-article-card">\n  <img class="moshe-article-card-icon" src="${ASSET_BASE}Moshe-Symbol.png" alt="סמל הקורס">\n  <h4 class="moshe-article-card-title">${escapeHtml(title)}</h4>\n  <p class="moshe-article-card-text">\n    ${escapeHtml(desc)}</p>\n  <a class="moshe-article-card-button" href="${pdfUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(btnText)}</a>\n</div>`;
+    }
+
+    document.getElementById('create-output').value = html;
+}
+
+function copyCreateOutput() {
+    const out = document.getElementById('create-output');
+    out.select();
+    document.execCommand('copy');
+}
+
 function filterStyle(styleStr, removeProps) {
     if (!styleStr) return '';
     const parts = styleStr.split(';').map(s => s.trim()).filter(Boolean);
