@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>מחולל קוד - קורס משה (קמפוס) v3</title>
+<title>מחולל קוד - קורס משה (קמפוס) v4</title>
 <style>
   :root{
     --moshe-ink:#000a11;
@@ -34,6 +34,8 @@
   #pasteArea{min-height:160px;direction:ltr;text-align:left;font-family:Consolas,Menlo,monospace;font-size:11.5px;}
   label{display:block;font-size:12.5px;font-weight:700;margin:12px 0 5px;color:#555;}
   .field-note{font-size:11px;color:#9aa3ac;margin-top:4px;}
+  .checkbox-field{display:flex;align-items:center;gap:6px;margin:12px 0 5px;}
+  .checkbox-field label{margin:0;font-size:12.5px;font-weight:700;color:#555;}
   .btn{border:none;border-radius:9999px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;}
   .btn:hover{opacity:.9;}
   .btn-primary{background:var(--moshe-turquoise);color:#fff;}
@@ -64,11 +66,16 @@
   .empty-state{text-align:center;color:#b4bcc4;padding:40px 10px;font-size:13.5px;}
 
   /* ============================================================
-     קלאסים לתצוגה מקדימה — זהים ל-custom-style.css העדכני (מקטע 10א)
+     קלאסים לתצוגה מקדימה — זהים ל-custom-style.css העדכני (עודכן
+     בהתאם לכל התיקונים: moshe-strong, moshe-questions-title מאוחד
+     ל-moshe-unit-title, moshe-title-spaced, moshe-body-text margin:0,
+     הוסר moshe-list המת (לא בשימוש בפועל — כל רשימה משתמשת ב-
+     moshe-questions-list, כולל רשימות רגילות, לפי החלטת קרן)
      ============================================================ */
   .moshe-unit-wrapper{overflow-x:hidden;box-sizing:border-box;width:100%;max-width:1024px;margin:0 auto;line-height:1.6;}
   .moshe-unit-title{display:block;font-weight:700;margin:0 0 16px 0;font-size:24px;color:var(--moshe-ink)!important;}
-  .moshe-body-text{margin:0 0 20px 0;font-weight:400;font-size:16px;color:var(--moshe-ink)!important;text-align:justify!important;}
+  .moshe-unit-title.moshe-title-spaced{margin-top:32px;}
+  .moshe-body-text{margin:0;font-weight:400;font-size:16px;color:var(--moshe-ink)!important;text-align:justify!important;}
   .moshe-verse-box{background-color:var(--moshe-blue-box-bg);border:1px solid var(--moshe-blue-box-border);border-radius:24px;padding:32px 40px;margin:32px 0;}
   .moshe-verse-box .quote{display:block;font-weight:700;color:var(--moshe-blue-box-text);font-size:18px;margin-bottom:8px;}
   .moshe-verse-box .source{display:block;color:var(--moshe-blue-box-text);font-size:16px;}
@@ -77,6 +84,8 @@
   .moshe-commentary-box .source{display:block;margin-top:12px;color:var(--moshe-red-box-text);font-weight:400;font-size:15px;}
   .moshe-emphasis{color:var(--moshe-turquoise);font-weight:700;}
   .moshe-emphasis-red{color:var(--moshe-red-box-text);font-weight:700;}
+  .moshe-strong{font-weight:700;}
+  .moshe-small-heading{}
   .moshe-video-box{display:block;width:100%;text-align:center;box-sizing:border-box;margin:0 0 48px 0;}
   .moshe-video-box .moshe-video-frame{position:relative;width:100%;padding-bottom:56.25%;overflow:hidden;border-radius:24px;background-color:var(--moshe-blue-box-bg);border:1px solid var(--moshe-blue-box-border);}
   .moshe-video-box .moshe-video-frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
@@ -88,19 +97,15 @@
   .moshe-concentric-block{font-size:15px;color:var(--moshe-ink);line-height:1.6;margin-bottom:24px;padding:0 16px;}
   .moshe-concentric-block strong{font-weight:700;}
   /* שאלות להעמקה — ⚠️ בכוונה בלי תיבה/מסגרת/רקע: כותרת מודגשת + רשימה
-     באותו פונט/גודל כמו טקסט רגיל (רק בולטים) */
+     באותו פונט/גודל כמו טקסט רגיל (רק בולטים).
+     moshe-questions-title עודכן להיות זהה לגמרי ל-moshe-unit-title
+     (24px, לא 20px כמו קודם) — לפי החלטת קרן. */
   .moshe-questions-box{margin:48px 0 0 0;}
-  .moshe-questions-title{margin:0 0 24px 0;font-size:20px;font-weight:700;color:var(--moshe-ink)!important;text-align:right;display:block;}
+  .moshe-questions-title{display:block;font-weight:700;margin:0 0 16px 0;font-size:24px;color:var(--moshe-ink)!important;}
   .moshe-questions-list{list-style:none!important;list-style-type:none!important;padding:0;margin:0;}
-  .moshe-questions-list li{list-style-type:none!important;margin-bottom:16px;padding-right:24px;position:relative;color:var(--moshe-ink)!important;font-family:'Fredoka','Fredoka-Regular',sans-serif!important;font-weight:400;text-align:justify!important;line-height:1.6!important;font-size:16px;}
+  .moshe-questions-list li{list-style-type:none!important;margin-bottom:16px;padding-right:24px;position:relative;color:var(--moshe-ink)!important;font-weight:400;text-align:justify!important;line-height:1.6!important;font-size:16px;}
   .moshe-questions-list li:last-child{margin-bottom:0;}
   .moshe-questions-list li::before{content:"•";position:absolute;right:0;top:0;color:var(--moshe-ink)!important;font-size:20px;line-height:1.4;}
-  /* רשימה כללית (לא "שאלות") - נדרשת הוספה בפועל ל-custom-style.css */
-  .moshe-list{list-style:none!important;padding:0 24px 0 0;margin:0 0 32px 0;}
-  .moshe-list li{list-style-type:none!important;margin-bottom:12px;padding-right:24px;position:relative;color:var(--moshe-ink)!important;font-family:'Fredoka','Fredoka-Regular',sans-serif!important;font-weight:400;text-align:justify!important;line-height:1.6!important;font-size:16px;}
-  .moshe-list li:last-child{margin-bottom:0;}
-  .moshe-list li::before{content:"•";position:absolute;right:0;top:0;color:var(--moshe-ink)!important;font-size:20px;line-height:1.4;}
-  .moshe-bold{font-family:'Fredoka-SemiBold','Fredoka-bold',sans-serif!important;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -109,9 +114,14 @@
   <div class="sub">קורס "משה" · Campus · לפי custom-style.css העדכני</div>
 
   <div class="warn-box">
-    ✅ תוקן: בולט כפול בשאלות (המחולל היה משאיר את ה-<code>•</code> הישן מהתבנית
-    כטקסט, בנוסף לבולט מה-CSS) · תוקן כפתור ההעתקה (fallback ל-execCommand
-    כשה-clipboard API חסום) · הוסר טאב "CSS חסר" — כל הקלאסים כבר קיימים בפועל.
+    ✅ עדכון: <code>moshe-questions-title</code> אוחד להיות זהה ל-<code>moshe-unit-title</code>
+    (24px, לא 20px) · נוסף <code>moshe-strong</code> להדגשה רגילה (בולד בגופן
+    האמיתי של הקורס, לא בולד מסונתז של הדפדפן) — סימון <code>@@טקסט@@</code>
+    משתמש בו עכשיו בכל שדות הטקסט, לא רק בשאלות · הוסר <code>moshe-list</code>
+    (היה קלאס מת שלא שימש בפועל — כל רשימה, כולל רשימות רגילות, ממופה עכשיו
+    ל-<code>moshe-questions-list</code>) · תוקן margin של <code>moshe-body-text</code>
+    ל-0 (היה 20px בטעות בתצוגה המקדימה, לא תואם לקובץ האמיתי) · נוספה אפשרות
+    "רווח עליון נוסף" לכותרות (<code>moshe-title-spaced</code>) למקרים כמו סילבוס.
   </div>
 
   <!-- שלב 1: הדבקה -->
@@ -193,8 +203,18 @@ function renderFields(){
     if(note){ const n=document.createElement('div'); n.className='field-note'; n.textContent=note; wrap.appendChild(n); }
     fieldsArea.appendChild(wrap);
   };
-  if(currentType==='unittitle'){ f('טקסט כותרת', mkInput('t-text','')); }
-  if(currentType==='body'){ f('טקסט הפסקה', mkTextarea('t-text',''), 'סימון: **טקסט**=הדגשה כחולה | ##טקסט##=הדגשה אדומה'); }
+  const fCheck = (labelText, id)=>{
+    const wrap = document.createElement('div'); wrap.className='checkbox-field';
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.id=id;
+    const lab = document.createElement('label'); lab.setAttribute('for',id); lab.textContent=labelText;
+    wrap.appendChild(cb); wrap.appendChild(lab);
+    fieldsArea.appendChild(wrap);
+  };
+  if(currentType==='unittitle'){
+    f('טקסט כותרת', mkInput('t-text',''));
+    fCheck('רווח עליון נוסף (לכותרות אחרי בלוק כמו סילבוס)', 't-spaced');
+  }
+  if(currentType==='body'){ f('טקסט הפסקה', mkTextarea('t-text',''), 'סימון: **טקסט**=הדגשה כחולה | ##טקסט##=הדגשה אדומה | @@טקסט@@=הדגשה רגילה (בולד בגופן הקורס)'); }
   if(currentType==='verse'){ f('טקסט הפסוק/ציטוט', mkTextarea('t-quote','')); f('מקור', mkInput('t-source','')); }
   if(currentType==='commentary'){ f('טקסט הפרשנות', mkTextarea('t-text','')); f('מקור', mkInput('t-source','')); }
   if(currentType==='video'){ f('כתובת הוידאו (embed URL)', mkInput('t-url','https://...')); }
@@ -216,15 +236,22 @@ function applyInlineMarks(s){
   let out = escapeHtml(s);
   out = out.replace(/\*\*(.+?)\*\*/g,'<span class="moshe-emphasis">$1</span>');
   out = out.replace(/##(.+?)##/g,'<span class="moshe-emphasis-red">$1</span>');
-  out = out.replace(/@@(.+?)@@/g,'<strong>$1</strong>');
+  out = out.replace(/@@(.+?)@@/g,'<strong class="moshe-strong">$1</strong>');
   return out;
 }
 function val(id){ const el=document.getElementById(id); return el ? el.value.trim() : ''; }
-function clearFields(){ fieldsArea.querySelectorAll('input,textarea').forEach(el=>el.value=''); }
+function checked(id){ const el=document.getElementById(id); return el ? el.checked : false; }
+function clearFields(){
+  fieldsArea.querySelectorAll('input[type=text],textarea').forEach(el=>el.value='');
+  fieldsArea.querySelectorAll('input[type=checkbox]').forEach(el=>el.checked=false);
+}
 
 document.getElementById('addBtn').onclick = ()=>{
   const b = {id: blockIdSeq++, type: currentType, data:{}};
-  if(currentType==='unittitle'){ b.data.text=val('t-text'); if(!b.data.text){alert('נא למלא טקסט כותרת');return;} }
+  if(currentType==='unittitle'){
+    b.data.text=val('t-text'); if(!b.data.text){alert('נא למלא טקסט כותרת');return;}
+    b.data.spaced=checked('t-spaced');
+  }
   if(currentType==='body'){ b.data.text=val('t-text'); if(!b.data.text){alert('נא למלא טקסט');return;} }
   if(currentType==='verse'){ b.data.quote=val('t-quote'); b.data.source=val('t-source'); if(!b.data.quote){alert('נא למלא טקסט פסוק');return;} }
   if(currentType==='commentary'){ b.data.text=val('t-text'); b.data.source=val('t-source'); if(!b.data.text){alert('נא למלא טקסט פרשנות');return;} }
@@ -286,7 +313,10 @@ function renderList(){
 }
 
 function blockHtml(b){
-  if(b.type==='unittitle') return `  <h2 class="moshe-unit-title">${applyInlineMarks(b.data.text)}</h2>\n`;
+  if(b.type==='unittitle'){
+    const cls = b.data.spaced ? 'moshe-unit-title moshe-title-spaced' : 'moshe-unit-title';
+    return `  <h2 class="${cls}">${applyInlineMarks(b.data.text)}</h2>\n`;
+  }
   if(b.type==='body') return `  <p class="moshe-body-text">${applyInlineMarks(b.data.text)}</p>\n`;
   if(b.type==='verse'){
     return `  <div class="moshe-verse-box">\n    <span class="quote">${applyInlineMarks(b.data.quote)}</span>\n` +
@@ -379,7 +409,9 @@ document.querySelectorAll('.tab-btn').forEach(tb=>{
 });
 
 /* ============================================================
-   מנוע ההמרה — פורט מהמחולל שאישרת, עם אותה לוגיקה בדיוק
+   מנוע ההמרה — עודכן: בולד רגיל (STRONG/B ללא צבע ייעודי) מקבל
+   class="moshe-strong" במקום strong "עירום" בלי class, כדי שיקבל
+   את גופן ה-Fredoka-SemiBold האמיתי במקום בולד מסונתז של הדפדפן.
    ============================================================ */
 const TEAL_COLORS = ['#569eb8','#64a1b7','#85bec2'];
 const RED_COLORS  = ['#da4d39','#b72f1a'];
@@ -440,7 +472,12 @@ function cleanInline(el){
       let cls=null;
       if(styleHas(node,TEAL_COLORS)) cls='moshe-emphasis';
       else if(styleHas(node,RED_COLORS)) cls='moshe-emphasis-red';
-      if(!cls && (/font-weight:\s*(bold|[67]00)/i.test(style) || node.tagName==='STRONG' || node.tagName==='B')) cls=null; // בולד רגיל -> משאירים כ-strong פשוט בלי class
+      // בולד רגיל בלי צבע ייעודי (STRONG/B, או SPAN עם font-weight bold/600-700)
+      // -> moshe-strong, כדי לקבל את גופן ה-Fredoka-SemiBold האמיתי במקום
+      // בולד מסונתז של הדפדפן על גופן רגיל.
+      if(!cls && (node.tagName==='STRONG' || node.tagName==='B' || /font-weight:\s*(bold|[67]00)/i.test(style))){
+        cls='moshe-strong';
+      }
       if(cls) node.setAttribute('class', cls); else node.removeAttribute('class');
     }
     node.removeAttribute('style');
@@ -525,7 +562,7 @@ function convertFragment(rootEl){
           const cb=document.createElement('div'); cb.className='moshe-concentric-block';
           kids.forEach(c=>{
             const line=c.cloneNode(true);
-            line.querySelectorAll('*').forEach(n=>{ if(n.tagName!=='STRONG'&&n.tagName!=='B') n.removeAttribute('style'); else n.removeAttribute('style'); });
+            cleanInline(line);
             cb.appendChild(line);
           });
           target.appendChild(cb);
